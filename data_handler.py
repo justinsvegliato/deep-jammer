@@ -12,5 +12,5 @@ def get_data(file, class_count):
 
     return examples, categorical_labels
 
-def split_data(data, count):
-    return data[0:count], data[count:data.shape[0]]
+def split_data(data, training_example_count):
+    return data[0:training_example_count], data[training_example_count:data.shape[0]]
