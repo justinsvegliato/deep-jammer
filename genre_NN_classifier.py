@@ -7,7 +7,7 @@ CLASS_COUNT = 2
 TRAINING_EXAMPlE_COUNT = 200
 
 def main():
-    examples, labels = data_handler.get_data('data.csv', CLASS_COUNT)
+    examples, labels = data_handler.get_data('example_data.csv', CLASS_COUNT)
 
     training_examples, test_examples = data_handler.split_data(examples, TRAINING_EXAMPlE_COUNT)
     training_labels, test_labels = data_handler.split_data(labels, TRAINING_EXAMPlE_COUNT)
