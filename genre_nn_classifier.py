@@ -18,7 +18,8 @@ def main():
     ])
     model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
     model.fit(training_examples, training_labels)
-    model.evaluate(test_examples, test_labels)
+
+    print '\nAccuracy %s' % model.evaluate(test_examples, test_labels)[1]
 
 if __name__ == '__main__':
     main()
