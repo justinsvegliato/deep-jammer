@@ -1,5 +1,6 @@
 import numpy as np
 from keras.models import Sequential
+from keras.optimizers import SGD
 from keras.layers.core import Dense, Activation
 from keras.utils import np_utils
 
@@ -27,15 +28,13 @@ def main():
         Dense(CLASS_COUNT, input_dim=training_examples.shape[1]),
         Activation('softmax')
     ])
-    model.compile(loss='mean_squared_error', optimizer='rmsprop')
+
+    sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
+    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+
     model.fit(training_examples, training_labels)
 
-    print 'Score: %s' % model.evaluate(test_examples, test_labels)
+    print '\nStatus: %s' % model.evaluate(test_examples, test_labels)
 
 if __name__ == '__main__':
     main()
-
-# Scratch:
-# The data has the shape N X T, where
-# N is the number of training examples, and
-# T is the number of seconds multiplied by the frequency in hertz.
