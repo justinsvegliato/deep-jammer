@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import data_handler
+from data import data_handler
 from sklearn.neighbors import KNeighborsClassifier
 
 CLASS_COUNT = 2
