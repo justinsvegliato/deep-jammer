@@ -12,6 +12,8 @@ def get_dataset(file, class_count):
     integer_labels = [int(label) for label in labels]
     categorical_labels = np_utils.to_categorical(integer_labels, class_count)
 
+    # print 'Unique Classes', len(np.unique(labels))
+
     return examples, categorical_labels
 
 def split_dataset(data, training_example_count):
