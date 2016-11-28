@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import numpy as np
+import theano.tensor as T
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Activation, Reshape, Permute, Lambda
 
@@ -18,36 +18,33 @@ OUTPUT_LAYER = 2
 
 
 def add_dimension(x):
-    return x
+    return x.reshape([1, NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES])
 
-def get_expanded_shape(shape):
-    return (1,) + shape
+def output_shape(shape):
+    return shape
 
 def remove_dimension(x):
-    return x
-
-def get_squeezed_shape(shape):
-    return shape[1:]
+    return x.reshape([NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES])
 
 def main():
     model = Sequential([
-        Lambda(add_dimension, output_shape=get_expanded_shape, input_shape=(NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
+        Lambda(add_dimension, output_shape=output_shape, input_shape=(NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
         Reshape((NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES)),
-        Lambda(remove_dimension, output_shape=get_squeezed_shape),
+        Lambda(remove_dimension, output_shape=output_shape),
         LSTM(TIME_MODEL_LAYER_1, return_sequences=True),
-        LSTM(TIME_MODEL_LAYER_2, return_sequences=True),
-        Lambda(add_dimension, output_shape=get_expanded_shape),
-        Reshape((NUM_SEGMENTS, NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES)),
-        Permute((1, 3, 2, 4)),
-        Reshape((NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
-        Lambda(remove_dimension, output_shape=get_squeezed_shape),
-        LSTM(NOTE_MODEL_LAYER_1, return_sequences=True),
-        LSTM(NOTE_MODEL_LAYER_2, return_sequences=True),
-        Lambda(add_dimension, output_shape=get_expanded_shape),
-        Reshape((NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES)),
-        Lambda(remove_dimension, output_shape=get_squeezed_shape),
-        Dense(OUTPUT_LAYER),
-        Activation('sigmoid')
+        # LSTM(TIME_MODEL_LAYER_2, return_sequences=True),
+        # Lambda(add_dimension, output_shape=output_shape),
+        # Reshape((NUM_SEGMENTS, NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES)),
+        # Permute((1, 3, 2, 4)),
+        # Reshape((NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
+        # Lambda(remove_dimension, output_shape=output_shape),
+        # LSTM(NOTE_MODEL_LAYER_1, return_sequences=True),
+        # LSTM(NOTE_MODEL_LAYER_2, return_sequences=True),
+        # Lambda(add_dimension, output_shape=output_shape),
+        # Reshape((NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES)),
+        # Lambda(remove_dimension, output_shape=output_shape),
+        # Dense(OUTPUT_LAYER),
+        # Activation('sigmoid')
     ])
 
 if __name__ == '__main__':
