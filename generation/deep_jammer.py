@@ -26,10 +26,11 @@ get_expanded_shape_2 = lambda shape: [1, NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS
 remove_dimension_2 = lambda x: x.reshape([NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2])
 get_contracted_shape_2 = lambda shape: [NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2]
 
-add_dimension_3 = lambda x: x.reshape([1, NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2])
-get_expanded_shape_3 = lambda shape: [1, NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2]
-remove_dimension_3 = lambda x: x.reshape([NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2])
-get_contracted_shape_3 = lambda shape: [NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2]
+# We might not need this since we're feeding the input into a time distributed dense layer.
+# add_dimension_3 = lambda x: x.reshape([1, NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2])
+# get_expanded_shape_3 = lambda shape: [1, NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2]
+# remove_dimension_3 = lambda x: x.reshape([NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2])
+# get_contracted_shape_3 = lambda shape: [NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2]
 
 def main():
     model = Sequential([
