@@ -1,6 +1,6 @@
 from mido import MidiFile, MetaMessage
 
-mid = MidiFile('example.mid')
+mid = MidiFile('example_song.mid')
 
 for i, track in enumerate(mid.tracks):
     types = {}
