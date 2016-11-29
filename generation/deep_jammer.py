@@ -18,8 +18,8 @@ OUTPUT_LAYER = 2
 
 DROPOUT_PROBABILITY = 0.5
 
-add_dimension_1 = lambda x: x.reshape([1, NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES])
-get_expanded_shape_1 = lambda shape: [1, NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES]
+add_dimension_1 = lambda x: x.reshape([1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES])
+get_expanded_shape_1 = lambda shape: [1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES]
 remove_dimension_1 = lambda x: x.reshape([NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES])
 get_contracted_shape_1 = lambda shape: [NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES]
 
@@ -33,9 +33,13 @@ get_expanded_shape_3 = lambda shape: [1, NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES
 remove_dimension_3 = lambda x: x.reshape([NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NOTE_MODEL_LAYER_2])
 get_contracted_shape_3 = lambda shape: [NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NOTE_MODEL_LAYER_2]
 
+add_dimension_4 = lambda x: x.reshape([1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER])
+get_expanded_shape_4 = lambda shape: [1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER]
+
 def main():
     model = Sequential([
-        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, input_shape=(NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
+        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, input_shape=(NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES)),
+        Reshape((NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
         Permute((1, 3, 2, 4)),
         Reshape((NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES)),
         Lambda(remove_dimension_1, output_shape=get_contracted_shape_1),
@@ -61,6 +65,7 @@ def main():
         Lambda(remove_dimension_3, output_shape=get_contracted_shape_3),
 
         Dense(OUTPUT_LAYER),
+        Lambda(add_dimension_4, output_shape=get_expanded_shape_4),
         Activation('sigmoid')
     ])
 
@@ -73,24 +78,14 @@ def main():
 
     # X_train = np.array([piece_segment_1[0], piece_segment_2[0]])
     X_train = np.array([np.array([piece_segment_1[0], piece_segment_2[0]])])
-    print len(X_train)
-    print len(X_train[0])
-    print len(X_train[0][0])
-    print len(X_train[0][0][0])
-    print len(X_train[0][0][0][0])
-    print X_train[0][0][0][0]
+    X_train = np.reshape(X_train, (1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES))
+    print X_train.shape
 
     y_train = np.array([np.array([piece_segment_1[1], piece_segment_2[1]])])
-    print len(y_train)
-    print len(y_train[0])
-    print len(y_train[0][0])
-    print len(y_train[0][0][0])
-    print len(y_train[0][0][0][0])
+    y_train = np.reshape(y_train, (1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER))
+    print y_train.shape
 
-    # print len(X_train)
-    # print len(y_train)
-
-    model.fit(X_train, y_train, nb_epoch=NUM_EPOCHS, batch_size=NUM_SEGMENTS)
+    model.fit(X_train, y_train, nb_epoch=NUM_EPOCHS, batch_size=NUM_SEGMENTS * NUM_SEGMENTS * NUM_NOTES)
 
 if __name__ == '__main__':
     main()
