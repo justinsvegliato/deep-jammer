@@ -5,10 +5,8 @@ import numpy as np
 import multi_training
 
 NUM_EPOCHS = 10
-NUM_TRAIN = 100
-NUM_TEST = 10
-
-NUM_SEGMENTS = 2
+NUM_TESTS = 100
+NUM_SEGMENTS = 1000
 NUM_TIMESTEPS = 128
 NUM_NOTES = 78
 NUM_FEATURES = 80
@@ -27,11 +25,11 @@ def generate_dataset(pieces, size):
 
     for _ in xrange(size):
         segment = multi_training.get_piece_segment(pieces)
-        X.append(segment[0])
-        y.append(segment[1])
+        X_train.append(segment[0])
+        y_train.append(segment[1])
 
     X = np.array([np.array(X_train)]).reshape((1, size * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES))
-    y = np.array([np.array(y_train)]).reshape((1, size * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES))
+    y = np.array([np.array(y_train)]).reshape((1, size * NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER))
 
     return X, y
 
@@ -93,22 +91,6 @@ def main():
     X_train, y_train = generate_dataset(pieces, NUM_SEGMENTS)
     X_test, y_test = generate_dataset(pieces, NUM_TEST)
 
-    # X_test = np.array([np.array([piece_segment_1[0], piece_segment_2[0]])])
-    # X_test = np.reshape(X_train, (1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES))
-    # for i in xrange(NUM_TEST):
-    #     piece_segment_1 = multi_training.get_piece_segment(pieces)
-
-    # X_train = np.array([piece_segment_1[0], piece_segment_2[0]])
-    # X_train = np.array([np.array([piece_segment_1[0], piece_segment_2[0]])])
-    # X_train = np.reshape(X_train, (1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES))
-    # print X_train.shape
-    #
-    # y_train = np.array([np.array([piece_segment_1[1], piece_segment_2[1]])])
-    # y_train = np.reshape(y_train, (1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER))
-    # print y_train.shape
-    #
-    # X_test = np.
-
     width = NUM_TIMESTEPS * NUM_NOTES
     for i in xrange(NUM_SEGMENTS * NUM_EPOCHS):
         print 'Training on batch %s/%s' % (i, NUM_SEGMENTS * NUM_EPOCHS)
@@ -125,7 +107,7 @@ def main():
 
     # model.fit(X_train, y_train, nb_epoch=NUM_EPOCHS, batch_size=NUM_TIMESTEPS * NUM_NOTES)
 
-    for i in xrange(NUM_TEST):
+    for i in xrange(NUM_TESTS):
         start = width * i
         # TODO: Check this shit out for -1
         end = width * (i + 1)
