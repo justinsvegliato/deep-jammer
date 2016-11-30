@@ -53,6 +53,7 @@ get_expanded_shape_4 = lambda shape: [1, NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER
 
 def main():
     model = Sequential([
+        # TODO: Do we still need to add a dimension?
         Lambda(add_dimension_1, output_shape=get_expanded_shape_1, input_shape=(NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES)),
         Reshape((1, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
         Permute((1, 3, 2, 4)),
@@ -88,16 +89,21 @@ def main():
 
     pieces = multi_training.load_pieces('music')
 
+    print "Generating training set..."
     X_train, y_train = generate_dataset(pieces, NUM_SEGMENTS)
-    X_test, y_test = generate_dataset(pieces, NUM_TEST)
 
+    print "Generating test set..."
+    X_test, y_test = generate_dataset(pieces, NUM_TESTS)
+
+    print "Training the model..."
     width = NUM_TIMESTEPS * NUM_NOTES
     for i in xrange(NUM_SEGMENTS * NUM_EPOCHS):
         print 'Training on batch %s/%s' % (i, NUM_SEGMENTS * NUM_EPOCHS)
 
         segment = i % NUM_SEGMENTS
-        start = width * segment
+
         # TODO: Check this shit out for -1
+        start = width * segment
         end = width * (segment + 1)
 
         X = X_train[:, start:end, :]
@@ -105,11 +111,10 @@ def main():
 
         model.train_on_batch(X, y)
 
-    # model.fit(X_train, y_train, nb_epoch=NUM_EPOCHS, batch_size=NUM_TIMESTEPS * NUM_NOTES)
-
+    print "Testing the model..."
     for i in xrange(NUM_TESTS):
-        start = width * i
         # TODO: Check this shit out for -1
+        start = width * i
         end = width * (i + 1)
 
         X = X_test[:, start:end, :]
