@@ -7,6 +7,7 @@ import multi_training
 NUM_EPOCHS = 10
 NUM_TRAIN = 100
 NUM_TEST = 10
+NUM_GEN = 10
 
 NUM_SEGMENTS = 2
 NUM_TIMESTEPS = 128
@@ -61,9 +62,9 @@ def main():
         Reshape((NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES)),
         Lambda(remove_dimension_1, output_shape=get_contracted_shape_1),
 
-        LSTM(TIME_MODEL_LAYER_1, return_sequences=True),
+        LSTM(TIME_MODEL_LAYER_1, return_sequences=True, stateful = True),
         # Dropout(DROPOUT_PROBABILITY),
-        LSTM(TIME_MODEL_LAYER_2, return_sequences=True),
+        LSTM(TIME_MODEL_LAYER_2, return_sequences=True, stateful = True),
         # Dropout(DROPOUT_PROBABILITY),
 
         Lambda(add_dimension_2, output_shape=get_expanded_shape_2),
@@ -115,13 +116,13 @@ def main():
 
         segment = i % NUM_SEGMENTS
         start = width * segment
-        # TODO: Check this shit out for -1
         end = width * (segment + 1)
 
         X = X_train[:, start:end, :]
         y = y_train[:, start:end, :]
 
         model.train_on_batch(X, y)
+        model.reset_states()
 
     # model.fit(X_train, y_train, nb_epoch=NUM_EPOCHS, batch_size=NUM_TIMESTEPS * NUM_NOTES)
 
@@ -134,6 +135,25 @@ def main():
         y = y_test[:, start:end, :]
 
         print model.test_on_batch(X, y)
+        model.reset_states
+
+
+    for i in xrange(NUM_GEN):
+        # TODO Initialize song segments
+
+        X_gen = np.rand((NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES))
+        model.reset_states()
+
+        X_in = X_gen[0,:]
+
+        for i in xrange(NUM_TIMESTEPS):
+
+            start = NUM_NOTES * i
+            end = NUM_NOTES * (i + 1)
+
+            X_in = model.predict(X_in, batch_size=NUM_NOTES, verbose=0)
+            X_gen[start:end, :] = X_in
+
 
 if __name__ == '__main__':
     main()
