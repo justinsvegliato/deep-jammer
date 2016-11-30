@@ -18,30 +18,30 @@ OUTPUT_LAYER = 2
 
 DROPOUT_PROBABILITY = 0.5
 
-add_dimension_1 = lambda x: x.reshape([1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES])
-get_expanded_shape_1 = lambda shape: [1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES]
-remove_dimension_1 = lambda x: x.reshape([NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES])
-get_contracted_shape_1 = lambda shape: [NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES]
+add_dimension_1 = lambda x: x.reshape([1, NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES])
+get_expanded_shape_1 = lambda shape: [1, NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES]
+remove_dimension_1 = lambda x: x.reshape([NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES])
+get_contracted_shape_1 = lambda shape: [NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES]
 
-add_dimension_2 = lambda x: x.reshape([1, NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2])
-get_expanded_shape_2 = lambda shape: [1, NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2]
-remove_dimension_2 = lambda x: x.reshape([NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2])
-get_contracted_shape_2 = lambda shape: [NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2]
+add_dimension_2 = lambda x: x.reshape([1, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2])
+get_expanded_shape_2 = lambda shape: [1, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2]
+remove_dimension_2 = lambda x: x.reshape([NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2])
+get_contracted_shape_2 = lambda shape: [NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2]
 
-add_dimension_3 = lambda x: x.reshape([1, NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2])
-get_expanded_shape_3 = lambda shape: [1, NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2]
-remove_dimension_3 = lambda x: x.reshape([NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NOTE_MODEL_LAYER_2])
-get_contracted_shape_3 = lambda shape: [NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NOTE_MODEL_LAYER_2]
+add_dimension_3 = lambda x: x.reshape([1, NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2])
+get_expanded_shape_3 = lambda shape: [1, NUM_TIMESTEPS, NUM_NOTES, NOTE_MODEL_LAYER_2]
+remove_dimension_3 = lambda x: x.reshape([NUM_TIMESTEPS * NUM_NOTES, NOTE_MODEL_LAYER_2])
+get_contracted_shape_3 = lambda shape: [NUM_TIMESTEPS * NUM_NOTES, NOTE_MODEL_LAYER_2]
 
-add_dimension_4 = lambda x: x.reshape([1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER])
-get_expanded_shape_4 = lambda shape: [1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER]
+add_dimension_4 = lambda x: x.reshape([1, NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER])
+get_expanded_shape_4 = lambda shape: [1, NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER]
 
 def main():
     model = Sequential([
-        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, input_shape=(NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES)),
-        Reshape((NUM_SEGMENTS, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
+        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, input_shape=(NUM_TIMESTEPS * NUM_NOTES, NUM_FEATURES)),
+        Reshape((1, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
         Permute((1, 3, 2, 4)),
-        Reshape((NUM_SEGMENTS * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES)),
+        Reshape((NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES)),
         Lambda(remove_dimension_1, output_shape=get_contracted_shape_1),
 
         LSTM(TIME_MODEL_LAYER_1, return_sequences=True),
@@ -50,9 +50,9 @@ def main():
         # Dropout(DROPOUT_PROBABILITY),
 
         Lambda(add_dimension_2, output_shape=get_expanded_shape_2),
-        Reshape((NUM_SEGMENTS, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2)),
+        Reshape((1, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2)),
         Permute((1, 3, 2, 4)),
-        Reshape((NUM_SEGMENTS * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2)),
+        Reshape((NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2)),
         Lambda(remove_dimension_2, output_shape=get_contracted_shape_2),
 
         LSTM(NOTE_MODEL_LAYER_1, return_sequences=True),
@@ -61,7 +61,7 @@ def main():
         # Dropout(DROPOUT_PROBABILITY),
 
         Lambda(add_dimension_3, output_shape=get_expanded_shape_3),
-        Reshape((NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, NOTE_MODEL_LAYER_2)),
+        Reshape((NUM_TIMESTEPS * NUM_NOTES, NOTE_MODEL_LAYER_2)),
         Lambda(remove_dimension_3, output_shape=get_contracted_shape_3),
 
         Dense(OUTPUT_LAYER),
@@ -85,7 +85,23 @@ def main():
     y_train = np.reshape(y_train, (1, NUM_SEGMENTS * NUM_TIMESTEPS * NUM_NOTES, OUTPUT_LAYER))
     print y_train.shape
 
-    model.fit(X_train, y_train, nb_epoch=NUM_EPOCHS, batch_size=NUM_SEGMENTS * NUM_SEGMENTS * NUM_NOTES)
+
+    width = NUM_TIMESTEPS * NUM_NOTES
+
+    for i in xrange(NUM_SEGMENTS * NUM_EPOCHS):
+        print 'Training on batch %s/%s' % (i, NUM_SEGMENTS * NUM_EPOCHS)
+
+        segment = i % NUM_SEGMENTS
+        start = width * segment
+        # TODO: Check this shit out for -1
+        end = width * (segment + 1)
+
+        X = X_train[:, start:end, :]
+        y = y_train[:, start:end, :]
+
+        model.train_on_batch(X, y)
+
+    # model.fit(X_train, y_train, nb_epoch=NUM_EPOCHS, batch_size=NUM_TIMESTEPS * NUM_NOTES)
 
 if __name__ == '__main__':
     main()
