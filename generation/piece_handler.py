@@ -1,18 +1,81 @@
-import midi, numpy
+import numpy as np
+import random
+import os
+import data
+import midi
 
-lowerBound = 24
-upperBound = 102
+LOWER_BOUND = 24
+UPPER_BOUND = 102
+
+SEGMENT_LENGTH = 128
+DIVISION_LENGTH = 16
+
+DIRECTORY = 'art'
 
 
-def midiToNoteStateMatrix(midifile):
-    pattern = midi.read_midifile(midifile)
+# TODO Clean up this method
+def get_dataset(pieces, size):
+    X = []
+    y = []
+
+    for _ in xrange(size):
+        segment = get_segment(pieces)
+        X.append(segment[0])
+        y.append(segment[1])
+
+    return np.array(X), np.array(y)
+
+
+def get_segment(pieces):
+    selected_pieces = random.choice(pieces.values())
+
+    start_index = random.randrange(0, len(selected_pieces) - SEGMENT_LENGTH, DIVISION_LENGTH)
+    end_index = start_index + SEGMENT_LENGTH
+
+    output = selected_pieces[start_index:end_index]
+    input = data.get_multiple_input_forms(output)
+
+    return input, output
+
+
+def get_pieces(path, size):
+    files = os.listdir(path)
+
+    if size > len(files):
+        return False
+
+    pieces = {}
+    for i in xrange(size):
+        file = files[i]
+
+        file_name = file[:-4]
+        extension = file[-4:]
+
+        if extension.lower() != '.mid':
+            continue
+
+        file_path = os.path.join(path, file)
+        note_state_matrix = get_piece(file_path)
+
+        # TODO This skips too many files that don't meet the proper shape
+        if len(note_state_matrix) < SEGMENT_LENGTH:
+            continue
+
+        pieces[file_name] = note_state_matrix
+
+    return pieces
+
+
+# TODO Clean up this method
+def get_piece(midi_file):
+    pattern = midi.read_midifile(midi_file)
 
     timeleft = [track[0].tick for track in pattern]
 
     posns = [0 for track in pattern]
 
     statematrix = []
-    span = upperBound - lowerBound
+    span = UPPER_BOUND - LOWER_BOUND
     time = 0
 
     state = [[0, 0] for x in range(span)]
@@ -31,14 +94,14 @@ def midiToNoteStateMatrix(midifile):
 
                 evt = track[pos]
                 if isinstance(evt, midi.NoteEvent):
-                    if (evt.pitch < lowerBound) or (evt.pitch >= upperBound):
+                    if (evt.pitch < LOWER_BOUND) or (evt.pitch >= UPPER_BOUND):
                         pass
                         # print "Note {} at time {} out of bounds (ignoring)".format(evt.pitch, time)
                     else:
                         if isinstance(evt, midi.NoteOffEvent) or evt.velocity == 0:
-                            state[evt.pitch - lowerBound] = [0, 0]
+                            state[evt.pitch - LOWER_BOUND] = [0, 0]
                         else:
-                            state[evt.pitch - lowerBound] = [1, 1]
+                            state[evt.pitch - LOWER_BOUND] = [1, 1]
                 elif isinstance(evt, midi.TimeSignatureEvent):
                     if evt.numerator not in (2, 4):
                         # We don't want to worry about non-4 time signatures. Bail early!
@@ -61,18 +124,19 @@ def midiToNoteStateMatrix(midifile):
 
     return statematrix
 
-def noteStateMatrixToMidi(statematrix, name="example"):
-    statematrix = numpy.asarray(statematrix)
+
+# TODO Clean up this method
+def save_piece(piece, name):
     pattern = midi.Pattern()
     track = midi.Track()
     pattern.append(track)
 
-    span = upperBound-lowerBound
+    span = UPPER_BOUND - LOWER_BOUND
     tickscale = 55
 
     lastcmdtime = 0
-    prevstate = [[0,0] for x in range(span)]
-    for time, state in enumerate(statematrix + [prevstate[:]]):
+    prevstate = [[0, 0] for x in range(span)]
+    for time, state in enumerate(piece + [prevstate[:]]):
         offNotes = []
         onNotes = []
         for i in range(span):
@@ -87,10 +151,10 @@ def noteStateMatrixToMidi(statematrix, name="example"):
             elif n[0] == 1:
                 onNotes.append(i)
         for note in offNotes:
-            track.append(midi.NoteOffEvent(tick=(time-lastcmdtime)*tickscale, pitch=note+lowerBound))
+            track.append(midi.NoteOffEvent(tick=(time - lastcmdtime) * tickscale, pitch=note + LOWER_BOUND))
             lastcmdtime = time
         for note in onNotes:
-            track.append(midi.NoteOnEvent(tick=(time-lastcmdtime)*tickscale, velocity=40, pitch=note+lowerBound))
+            track.append(midi.NoteOnEvent(tick=(time - lastcmdtime) * tickscale, velocity=40, pitch=note + LOWER_BOUND))
             lastcmdtime = time
 
         prevstate = state
@@ -98,4 +162,4 @@ def noteStateMatrixToMidi(statematrix, name="example"):
     eot = midi.EndOfTrackEvent(tick=1)
     track.append(eot)
 
-    midi.write_midifile("{}.mid".format(name), pattern)
+    midi.write_midifile('%s/%s.mid' % (DIRECTORY, name), pattern)
