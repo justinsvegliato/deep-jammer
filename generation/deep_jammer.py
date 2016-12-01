@@ -4,6 +4,8 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout
 import multi_training
+import midi_parser
+import data
 
 NUM_EPOCHS = 2
 NUM_TESTS = 2
@@ -74,34 +76,41 @@ def main():
     print 'Generating test set...'
     X_test, y_test = generate_dataset(pieces, NUM_TESTS)
 
-    print 'Training the model...'
-    for epoch in xrange(NUM_EPOCHS):
-        for segment in xrange(NUM_SEGMENTS):
-            print 'Training on batch %s/%s...' % (segment + epoch * NUM_SEGMENTS + 1, NUM_SEGMENTS * NUM_EPOCHS)
+    # print 'Training the model...'
+    # for epoch in xrange(NUM_EPOCHS):
+    #     for segment in xrange(NUM_SEGMENTS):
+    #         print 'Training on batch %s/%s...' % (segment + epoch * NUM_SEGMENTS + 1, NUM_SEGMENTS * NUM_EPOCHS)
+    #
+    #         for timestep in xrange(NUM_TIMESTEPS):
+    #             X = np.expand_dims(X_train[segment, timestep], axis=0)
+    #             y = np.expand_dims(y_train[segment, timestep], axis=0)
+    #             model.train_on_batch(X, y)
+    #
+    #         model.reset_states()
+    #
+    # print 'Testing the model...'
+    # for segment in xrange(NUM_SEGMENTS):
+    #     print 'Testing on batch %s/%s...' % (segment + 1, NUM_SEGMENTS * NUM_EPOCHS)
+    #
+    #     for timestep in xrange(NUM_TIMESTEPS):
+    #         X = np.expand_dims(X_test[segment, timestep], axis=0)
+    #         y = np.expand_dims(y_test[segment, timestep], axis=0)
+    #         model.test_on_batch(X, y)
+    #
+    #     model.reset_states()
 
-            for timestep in xrange(NUM_TIMESTEPS):
-                X = np.expand_dims(X_train[segment, timestep], axis=0)
-                y = np.expand_dims(y_train[segment, timestep], axis=0)
-                model.train_on_batch(X, y)
-
-            model.reset_states()
-
-    print 'Testing the model...'
-    for segment in xrange(NUM_SEGMENTS):
-        print 'Testing on batch %s/%s...' % (segment + 1, NUM_SEGMENTS * NUM_EPOCHS)
-
-        for timestep in xrange(NUM_TIMESTEPS):
-            X = np.expand_dims(X_test[segment, timestep], axis=0)
-            y = np.expand_dims(y_test[segment, timestep], axis=0)
-            model.test_on_batch(X, y)
-
-        model.reset_states()
-
-    generated_song = []
+    inputs = [X_train[0][0].reshape((1, 78, 80))]
+    outputs = []
     for i in xrange(NUM_GEN):
-        X_in = generated_song[i]
-        y_pred = model.predict(X_in, batch_size=1)
-        generated_song.append(y_pred)
+        X_in = inputs[i]
+        y_pred = model.predict(X_in, batch_size=1).reshape((78, 2))
+
+        input = np.array(data.noteStateSingleToInputForm(y_pred, i)).reshape((1, 78, 80))
+        inputs.append(input)
+
+        outputs.append(y_pred)
+
+    midi_parser.noteStateMatrixToMidi(outputs, 'samsjam')
 
 if __name__ == '__main__':
     main()
