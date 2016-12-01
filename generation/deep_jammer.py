@@ -9,10 +9,10 @@ import piece_handler
 import repository_handler
 import data_parser
 
-NUM_EPOCHS = 2
+NUM_EPOCHS = 10
 NUM_TESTS = 10
 
-NUM_SEGMENTS = 2
+NUM_SEGMENTS = 500
 NUM_TIMESTEPS = 128
 NUM_NOTES = 78
 NUM_FEATURES = 80
@@ -24,19 +24,28 @@ NOTE_MODEL_LAYER_2 = 50
 OUTPUT_LAYER = 2
 
 PIECE_LENGTH = 200
-
 DROPOUT_PROBABILITY = 0.5
+
+ARE_CHECKPOINTS_ENABLED = True
+CHECKPOINT_DIRECTORY = 'checkpoints'
+CHECKPOINT_THRESHOLD = 200
 
 
 def train(model, X_train, y_train):
     for epoch in xrange(NUM_EPOCHS):
         for segment in xrange(NUM_SEGMENTS):
-            print 'Training on batch %s/%s...' % (segment + epoch * NUM_SEGMENTS + 1, NUM_SEGMENTS * NUM_EPOCHS)
+            id = segment + epoch * NUM_SEGMENTS + 1
+
+            print 'Training on batch %s/%s...' % (id, NUM_SEGMENTS * NUM_EPOCHS)
 
             for timestep in xrange(NUM_TIMESTEPS):
                 X = np.expand_dims(X_train[segment, timestep], axis=0)
                 y = np.expand_dims(y_train[segment, timestep], axis=0)
                 model.train_on_batch(X, y)
+
+            if ARE_CHECKPOINTS_ENABLED and id % CHECKPOINT_THRESHOLD == 0:
+                filename = '%s/model-weights-%s.h5' % (CHECKPOINT_DIRECTORY, id)
+                model.save_weights(filename)
 
             model.reset_states()
 
@@ -117,7 +126,7 @@ def main():
 
         Activation('sigmoid')
     ])
-    # TODO Make sure the optimizer has the correct settings
+
     optimizer = Adadelta(lr=0.01, rho=0.95, epsilon=1e-06)
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
@@ -127,14 +136,14 @@ def main():
     print 'Generating the training set...'
     X_train, y_train = piece_handler.get_dataset(repository, NUM_SEGMENTS)
 
-    print 'Generating the test set...'
-    X_test, y_test = piece_handler.get_dataset(repository, NUM_TESTS)
-
     print 'Training the model...'
     train(model, X_train, y_train)
 
-    print 'Testing the model...'
-    test(model, X_test, y_test)
+    # print 'Generating the test set...'
+    # X_test, y_test = piece_handler.get_dataset(repository, NUM_TESTS)
+
+    # print 'Testing the model...'
+    # test(model, X_test, y_test)
 
     print 'Generating a piece...'
     # TODO Should the initial note be something else?
