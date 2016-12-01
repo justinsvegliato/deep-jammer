@@ -4,6 +4,7 @@ import theano as T
 import numpy as np
 from keras.models import Sequential
 from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout
+from keras.optimizers import Adadelta
 import piece_handler
 import repository_handler
 import data_parser
@@ -117,7 +118,8 @@ def main():
         Activation('sigmoid')
     ])
     # TODO Make sure the optimizer has the correct settings
-    model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
+    optimizer = Adadelta(lr=0.01, rho=0.95, epsilon=1e-06, decay=0.0)
+    model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
     print 'Retrieving repository...'
     repository = repository_handler.load_repository(args.repository)
