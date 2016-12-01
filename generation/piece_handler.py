@@ -1,7 +1,7 @@
 import numpy as np
 import random
 import os
-import data
+import data_parser
 import midi
 
 LOWER_BOUND = 24
@@ -33,7 +33,7 @@ def get_segment(pieces):
     end_index = start_index + SEGMENT_LENGTH
 
     output = selected_pieces[start_index:end_index]
-    input = data.get_multiple_input_forms(output)
+    input = data_parser.get_multiple_input_forms(output)
 
     return input, output
 

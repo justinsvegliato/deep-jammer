@@ -6,7 +6,7 @@ from keras.models import Sequential
 from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout
 import piece_handler
 import repository_handler
-import data
+import data_parser
 
 NUM_EPOCHS = 2
 NUM_TESTS = 10
@@ -68,7 +68,7 @@ def compose_piece(model, start_note):
         # Set articulate probabilities to 0 if the note is not played
         y_pred[:, 1] *= y_pred[:, 0]
 
-        input = np.array(data.get_single_input_form(y_pred, i)).reshape((1, 78, 80))
+        input = np.array(data_parser.get_single_input_form(y_pred, i)).reshape((1, 78, 80))
 
         inputs.append(input)
         outputs.append(y_pred)
