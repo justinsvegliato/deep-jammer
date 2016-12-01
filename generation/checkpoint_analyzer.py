@@ -67,7 +67,7 @@ def main():
     optimizer = Adadelta(lr=0.01, rho=0.95, epsilon=1e-06)
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
-    model.load_weights('checkpoints/example-model-weights.h5')
+    model.load_weights('checkpoints/model-weights-200.h5')
 
     print 'Generating the initial note of the piece...'
     repository = repository_handler.load_repository('example-repository')
