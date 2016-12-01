@@ -65,16 +65,16 @@ def main():
     ])
     model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
 
-    print "Retrieving pieces..."
+    print 'Retrieving pieces...'
     pieces = multi_training.load_pieces('music')
 
-    print "Generating training set..."
+    print 'Generating training set...'
     X_train, y_train = generate_dataset(pieces, NUM_SEGMENTS)
 
-    print "Generating test set..."
+    print 'Generating test set...'
     X_test, y_test = generate_dataset(pieces, NUM_TESTS)
 
-    print "Training the model..."
+    print 'Training the model...'
     for epoch in xrange(NUM_EPOCHS):
         for segment in xrange(NUM_SEGMENTS):
             print 'Training on batch %s/%s...' % (segment + epoch * NUM_SEGMENTS + 1, NUM_SEGMENTS * NUM_EPOCHS)
@@ -86,7 +86,7 @@ def main():
 
             model.reset_states()
 
-    print "Testing the model..."
+    print 'Testing the model...'
     for segment in xrange(NUM_SEGMENTS):
         print 'Testing on batch %s/%s...' % (segment + 1, NUM_SEGMENTS * NUM_EPOCHS)
 
