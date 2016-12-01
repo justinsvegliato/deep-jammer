@@ -2,7 +2,6 @@
 import theano as T
 from keras.models import Sequential
 from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout
-from keras.optimizers import Adadelta
 import deep_jammer
 import repository_handler
 import piece_handler
@@ -63,10 +62,7 @@ def main():
 
         Activation('sigmoid')
     ])
-
-    optimizer = Adadelta(lr=0.01, rho=0.95, epsilon=1e-06)
-    model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
-
+    model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
     model.load_weights('checkpoints/model-weights-200.h5')
 
     print 'Generating the initial note of the piece...'
