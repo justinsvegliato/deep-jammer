@@ -118,7 +118,7 @@ def main():
         Activation('sigmoid')
     ])
     # TODO Make sure the optimizer has the correct settings
-    optimizer = Adadelta(lr=0.01, rho=0.95, epsilon=1e-06, decay=0.0)
+    optimizer = Adadelta(lr=0.01, rho=0.95, epsilon=1e-06)
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
     print 'Retrieving repository...'
