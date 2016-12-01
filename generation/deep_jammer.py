@@ -105,7 +105,18 @@ def main():
         X_in = inputs[i]
         y_pred = model.predict(X_in, batch_size=1).reshape((78, 2))
 
+        rand_mask = np.random.uniform(size=y_pred.shape)
+
+        # Replace probababilities in input by 1s and 0s via sampling
+        y_pred = (rand_mask < y_pred)
+
+        # remove articulate if note not played
+
+
+        y_pred[:, 1] *= y_pred[:, 0]
+
         input = np.array(data.noteStateSingleToInputForm(y_pred, i)).reshape((1, 78, 80))
+
         inputs.append(input)
 
         outputs.append(y_pred)
