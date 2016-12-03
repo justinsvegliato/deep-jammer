@@ -1,158 +1,100 @@
 #!/usr/bin/env python
 import argparse
-import theano as T
 import numpy as np
-from keras.models import Sequential
-from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout
-import piece_handler
+import cPickle as pickle
 import repository_handler
-import data_parser
+import piece_handler
+import model
 
-NUM_EPOCHS = 10
-NUM_TESTS = 10
-
-NUM_SEGMENTS = 500
-NUM_TIMESTEPS = 128
-NUM_NOTES = 78
-NUM_FEATURES = 80
-
-TIME_MODEL_LAYER_1 = 300
-TIME_MODEL_LAYER_2 = 300
-NOTE_MODEL_LAYER_1 = 100
-NOTE_MODEL_LAYER_2 = 50
-OUTPUT_LAYER = 2
-
-PIECE_LENGTH = 200
+TIME_MODEL_LAYERS = [300, 300]
+NOTE_MODEL_LAYERS = [100, 50]
 DROPOUT_PROBABILITY = 0.5
 
-ARE_CHECKPOINTS_ENABLED = True
-CHECKPOINT_DIRECTORY = 'checkpoints'
-CHECKPOINT_THRESHOLD = 200
+ART_DIRECTORY = 'art'
+
+DEFAULT_EPOCHS = 5
+DEFAULT_BATCH_SIZE = 10
+DEFAULT_LENGTH = 5
 
 
-def train(model, X_train, y_train):
-    for epoch in xrange(NUM_EPOCHS):
-        for segment in xrange(NUM_SEGMENTS):
-            id = segment + epoch * NUM_SEGMENTS + 1
+def train(model, pieces, epochs, batch_size):
+    for i in range(epochs):
+        error = model.update_fun(*piece_handler.get_piece_batch(pieces, batch_size))
 
-            print 'Training on batch %s/%s...' % (id, NUM_SEGMENTS * NUM_EPOCHS)
+        if i % 1 == 0:
+            print 'Epoch %s: Error = %s' % (i, error)
 
-            for timestep in xrange(NUM_TIMESTEPS):
-                X = np.expand_dims(X_train[segment, timestep], axis=0)
-                y = np.expand_dims(y_train[segment, timestep], axis=0)
-                model.train_on_batch(X, y)
+        if i % 100 == 0:
+            input, output = map(np.array, piece_handler.get_segment(pieces))
 
-            if ARE_CHECKPOINTS_ENABLED and id % CHECKPOINT_THRESHOLD == 0:
-                filename = '%s/model-weights-%s.h5' % (CHECKPOINT_DIRECTORY, id)
-                model.save_weights(filename)
-
-            model.reset_states()
+            piece_handler.save_piece(
+                np.concatenate((np.expand_dims(output[0], 0), model.predict_fun(piece_handler.SEGMENT_LENGTH, 1, input[0])), axis=0),
+                'art/sample{}'.format(i))
+            pickle.dump(model.learned_config, open('art/params{}.p'.format(i), 'wb'))
 
 
-def test(model, X_test, y_test):
-    # TODO This function needs some work. It should iterate over NUM_TESTS, not NUM_SEGMENTS.
-    for segment in xrange(NUM_SEGMENTS):
-        print 'Testing on batch %s/%s...' % (segment + 1, NUM_SEGMENTS * NUM_EPOCHS)
+def compose(model, pieces, length, name):
+    input, output = map(lambda x: np.array(x, dtype='int8'), piece_handler.get_segment(pieces))
 
-        for timestep in xrange(NUM_TIMESTEPS):
-            X = np.expand_dims(X_test[segment, timestep], axis=0)
-            y = np.expand_dims(y_test[segment, timestep], axis=0)
-            model.test_on_batch(X, y)
+    outputs = [output[0]]
 
-        model.reset_states()
+    model.start_slow_walk(input[0])
 
+    multiplier = 1
+    for time in range(length * piece_handler.SEGMENT_LENGTH):
+        results = model.slow_walk_fun(multiplier)
 
-def compose_piece(model, start_note):
-    inputs = [start_note]
-    outputs = []
+        note_count = np.sum(results[-1][:, 0])
+        if note_count < 2:
+            multiplier = 1 if multiplier > 1 else multiplier - 0.02
+        else:
+            multiplier += (1 - multiplier) * 0.3
 
-    for i in xrange(PIECE_LENGTH):
-        X_in = inputs[i]
-        y_pred = model.predict(X_in, batch_size=1).reshape((78, 2))
+        outputs.append(results[-1])
 
-        # Set the probabilities of the input to 0s and 1s through sampling
-        rand_mask = np.random.uniform(size=y_pred.shape)
-        y_pred = (rand_mask < y_pred)
-
-        # Set articulate probabilities to 0 if the note is not played
-        y_pred[:, 1] *= y_pred[:, 0]
-
-        input = np.array(data_parser.get_single_input_form(y_pred, i)).reshape((1, 78, 80))
-
-        inputs.append(input)
-        outputs.append(y_pred)
-
-    return np.asarray(outputs)
-
-
-unbroadcast = lambda x: T.tensor.unbroadcast(x, 0)
-get_shape = lambda x: x
-
-add_dimension_1 = lambda x: x.reshape([1, 1, NUM_NOTES, NUM_FEATURES])
-get_expanded_shape_1 = lambda shape: [1, 1, NUM_NOTES, NUM_FEATURES]
-remove_dimension_1 = lambda x: x.reshape([NUM_NOTES, 1, NUM_FEATURES])
-get_contracted_shape_1 = lambda shape: [NUM_NOTES, 1, NUM_FEATURES]
-
-add_dimension_2 = lambda x: x.reshape([1, NUM_NOTES, 1, TIME_MODEL_LAYER_2])
-get_expanded_shape_2 = lambda shape: [1, NUM_NOTES, 1, TIME_MODEL_LAYER_2]
-remove_dimension_2 = lambda x: x.reshape([1, NUM_NOTES, TIME_MODEL_LAYER_2])
-get_contracted_shape_2 = lambda shape: [1, NUM_NOTES, TIME_MODEL_LAYER_2]
+    piece_handler.save_piece(np.array(outputs), 'art/' + name)
 
 
 def main():
-    model = Sequential([
-        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, input_shape=(NUM_NOTES, NUM_FEATURES)),
-        Permute((2, 1, 3)),
-        Lambda(remove_dimension_1, output_shape=get_contracted_shape_1),
+    print 'Retrieving the repository...'
+    pieces = repository_handler.load_repository(args.repository)
 
-        LSTM(TIME_MODEL_LAYER_1, return_sequences=True, stateful=True),
-        Dropout(DROPOUT_PROBABILITY),
-        LSTM(TIME_MODEL_LAYER_2, return_sequences=True, stateful=True),
-        Dropout(DROPOUT_PROBABILITY),
-
-        Lambda(add_dimension_2, output_shape=get_expanded_shape_2),
-        Permute((2, 1, 3)),
-        Lambda(remove_dimension_2, output_shape=get_contracted_shape_2),
-
-        Lambda(unbroadcast, output_shape=get_shape),
-        LSTM(NOTE_MODEL_LAYER_1, return_sequences=True),
-        Dropout(DROPOUT_PROBABILITY),
-        LSTM(NOTE_MODEL_LAYER_2, return_sequences=True),
-        Dropout(DROPOUT_PROBABILITY),
-
-        TimeDistributed(Dense(OUTPUT_LAYER)),
-        Dropout(DROPOUT_PROBABILITY),
-
-        Activation('sigmoid')
-    ])
-    model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
-
-    print 'Retrieving repository...'
-    repository = repository_handler.load_repository(args.repository)
-
-    print 'Generating the training set...'
-    X_train, y_train = piece_handler.get_dataset(repository, NUM_SEGMENTS)
+    print 'Generating the model...'
+    # TODO Rename model
+    m = model.Model(TIME_MODEL_LAYERS, NOTE_MODEL_LAYERS, dropout=DROPOUT_PROBABILITY)
 
     print 'Training the model...'
-    train(model, X_train, y_train)
+    train(m, pieces, args.epochs, args.batch_size)
 
-    # print 'Generating the test set...'
-    # X_test, y_test = piece_handler.get_dataset(repository, NUM_TESTS)
+    print 'Saving the model...'
+    # TODO Put this in a utility file
+    filename = '%s/%s-weights.p' % (ART_DIRECTORY, args.piece)
+    pickle.dump(m.learned_config, open(filename, 'wb'))
 
-    # print 'Testing the model...'
-    # test(model, X_test, y_test)
-
-    print 'Generating a piece...'
-    # TODO Should the initial note be something else?
-    initial_note = X_train[0][0].reshape((1, 78, 80))
-    piece = compose_piece(model, initial_note)
-    piece_handler.save_piece(piece, args.piece)
+    print 'Composing a piece...'
+    compose(m, pieces, args.length, args.piece)
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Generate a creative, ingenious, classical piece.')
+    parser = argparse.ArgumentParser(description='Compose a creative, ingenious, classical piece.')
     parser.add_argument('piece', metavar='piece', help='the name of the new piece')
     parser.add_argument('repository', metavar='repository', help='the name of the repository')
+    parser.add_argument('--epochs', default=DEFAULT_EPOCHS, type=int, metavar='epochs', help='the number of epochs')
+    parser.add_argument('--batch_size', default=DEFAULT_BATCH_SIZE, type=int, metavar='batchSize', help='the size of each batch')
+    parser.add_argument('--length', default=DEFAULT_LENGTH, type=int, metavar='length', help='the length of the new piece')
     args = parser.parse_args()
 
     main()
+
+
+
+
+
+
+
+
+
+
+
+
+

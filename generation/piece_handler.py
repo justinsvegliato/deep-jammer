@@ -1,29 +1,35 @@
-import numpy as np
-import random
 import os
-import data_parser
+import random
 import midi
+import numpy as np
+import data_parser
+
+SEGMENT_LENGTH = 16 * 8
+DIVISION_LENGTH = 16
 
 LOWER_BOUND = 24
 UPPER_BOUND = 102
 
-SEGMENT_LENGTH = 128
-DIVISION_LENGTH = 16
 
-DIRECTORY = 'art'
+def get_pieces(path):
+    pieces = {}
 
+    for file in os.listdir(path):
+        file_name = file[:-4]
+        extension = file[-4:]
 
-# TODO Clean up this method
-def get_dataset(pieces, size):
-    X = []
-    y = []
+        if extension.lower() != '.mid':
+            continue
 
-    for _ in xrange(size):
-        segment = get_segment(pieces)
-        X.append(segment[0])
-        y.append(segment[1])
+        file_path = os.path.join(path, file)
+        piece = get_piece(file_path)
 
-    return np.array(X), np.array(y)
+        if len(piece) < SEGMENT_LENGTH:
+            continue
+
+        pieces[file_name] = piece
+
+    return pieces
 
 
 def get_segment(pieces):
@@ -38,35 +44,11 @@ def get_segment(pieces):
     return input, output
 
 
-def get_pieces(path, size):
-    files = os.listdir(path)
-
-    if size > len(files):
-        return False
-
-    pieces = {}
-    for i in xrange(size):
-        file = files[i]
-
-        file_name = file[:-4]
-        extension = file[-4:]
-
-        if extension.lower() != '.mid':
-            continue
-
-        file_path = os.path.join(path, file)
-        note_state_matrix = get_piece(file_path)
-
-        # TODO This skips too many files that don't meet the proper shape
-        if len(note_state_matrix) < SEGMENT_LENGTH:
-            continue
-
-        pieces[file_name] = note_state_matrix
-
-    return pieces
+def get_piece_batch(pieces, batch_size):
+    inputs, outputs = zip(*[get_segment(pieces) for _ in range(batch_size)])
+    return np.array(inputs), np.array(outputs)
 
 
-# TODO Clean up this method
 def get_piece(midi_file):
     pattern = midi.read_midifile(midi_file)
 
@@ -125,8 +107,8 @@ def get_piece(midi_file):
     return statematrix
 
 
-# TODO Clean up this method
 def save_piece(piece, name):
+    piece = np.asarray(piece)
     pattern = midi.Pattern()
     track = midi.Track()
     pattern.append(track)
@@ -162,4 +144,4 @@ def save_piece(piece, name):
     eot = midi.EndOfTrackEvent(tick=1)
     track.append(eot)
 
-    midi.write_midifile('%s/%s.mid' % (DIRECTORY, name), pattern)
+    midi.write_midifile("{}.mid".format(name), pattern)
