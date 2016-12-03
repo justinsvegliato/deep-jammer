@@ -52,59 +52,62 @@ def get_piece_batch(pieces, batch_size):
 def get_piece(midi_file):
     pattern = midi.read_midifile(midi_file)
 
-    timeleft = [track[0].tick for track in pattern]
+    remaining_time = [track[0].tick for track in pattern]
 
-    posns = [0 for track in pattern]
+    positions = [0 for _ in pattern]
 
-    statematrix = []
-    span = UPPER_BOUND - LOWER_BOUND
     time = 0
+    span = UPPER_BOUND - LOWER_BOUND
 
-    state = [[0, 0] for x in range(span)]
-    statematrix.append(state)
+    state_matrix = []
+    state = [[0, 0] for _ in xrange(span)]
+    state_matrix.append(state)
+
     while True:
         if time % (pattern.resolution / 4) == (pattern.resolution / 8):
             # Crossed a note boundary. Create a new state, defaulting to holding notes
-            oldstate = state
-            state = [[oldstate[x][0], 0] for x in range(span)]
-            statematrix.append(state)
+            old_state = state
 
-        for i in range(len(timeleft)):
-            while timeleft[i] == 0:
+            print old_state
+            state = [[old_state[x][0], 0] for x in xrange(span)]
+            state_matrix.append(state)
+
+        for i in xrange(len(remaining_time)):
+            while remaining_time[i] == 0:
                 track = pattern[i]
-                pos = posns[i]
+                position = positions[i]
 
-                evt = track[pos]
-                if isinstance(evt, midi.NoteEvent):
-                    if (evt.pitch < LOWER_BOUND) or (evt.pitch >= UPPER_BOUND):
+                event = track[position]
+                if isinstance(event, midi.NoteEvent):
+                    if (event.pitch < LOWER_BOUND) or (event.pitch >= UPPER_BOUND):
                         pass
                         # print "Note {} at time {} out of bounds (ignoring)".format(evt.pitch, time)
                     else:
-                        if isinstance(evt, midi.NoteOffEvent) or evt.velocity == 0:
-                            state[evt.pitch - LOWER_BOUND] = [0, 0]
+                        if isinstance(event, midi.NoteOffEvent) or event.velocity == 0:
+                            state[event.pitch - LOWER_BOUND] = [0, 0]
                         else:
-                            state[evt.pitch - LOWER_BOUND] = [1, 1]
-                elif isinstance(evt, midi.TimeSignatureEvent):
-                    if evt.numerator not in (2, 4):
+                            state[event.pitch - LOWER_BOUND] = [1, 1]
+                elif isinstance(event, midi.TimeSignatureEvent):
+                    if event.numerator not in (2, 4):
                         # We don't want to worry about non-4 time signatures. Bail early!
                         # print "Found time signature event {}. Bailing!".format(evt)
-                        return statematrix
+                        return state_matrix
 
                 try:
-                    timeleft[i] = track[pos + 1].tick
-                    posns[i] += 1
+                    remaining_time[i] = track[position + 1].tick
+                    positions[i] += 1
                 except IndexError:
-                    timeleft[i] = None
+                    remaining_time[i] = None
 
-            if timeleft[i] is not None:
-                timeleft[i] -= 1
+            if remaining_time[i] is not None:
+                remaining_time[i] -= 1
 
-        if all(t is None for t in timeleft):
+        if all(t is None for t in remaining_time):
             break
 
         time += 1
 
-    return statematrix
+    return state_matrix
 
 
 def save_piece(piece, name):
