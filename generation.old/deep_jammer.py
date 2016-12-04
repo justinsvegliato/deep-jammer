@@ -2,17 +2,18 @@
 import argparse
 import theano as T
 import numpy as np
+import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.optimizers import Adadelta
-from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout
+from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout, BatchNormalization
 import piece_handler
 import repository_handler
 import data_parser
 
-NUM_EPOCHS = 100
+NUM_EPOCHS = 5
 NUM_TESTS = 10
 
-NUM_SEGMENTS = 100 
+NUM_SEGMENTS = 2 
 NUM_TIMESTEPS = 128
 NUM_NOTES = 78
 NUM_FEATURES = 80
@@ -30,25 +31,46 @@ ARE_CHECKPOINTS_ENABLED = True
 CHECKPOINT_DIRECTORY = 'checkpoints'
 CHECKPOINT_THRESHOLD = 100
 
+ARE_STORING_ACCURACIES = True
+ACCURACIES_DIRECTORY = 'accuracies'
+ACCURACIES_THRESHOLD = 25
+ACCURACY_DECAY_RATE = 0.9
+
 
 def train(model, X_train, y_train):
+
+    loss_history = []
+    moving_average_loss = 0.0
+
     for epoch in xrange(NUM_EPOCHS):
         for segment in xrange(NUM_SEGMENTS):
             id = segment + epoch * NUM_SEGMENTS + 1
 
             print 'Training on batch %s/%s...' % (id, NUM_SEGMENTS * NUM_EPOCHS)
 
-            for timestep in xrange(NUM_TIMESTEPS):
-                X = np.expand_dims(X_train[segment, timestep], axis=0)
-                y = np.expand_dims(y_train[segment, timestep], axis=0)
-                result = model.train_on_batch(X, y)
+            X = X_train[segment]
+            y = y_train[segment]
 
-                if timestep % 20 == 0:
-                    print '(Loss, Accuracy):', result
+            loss, _ = model.train_on_batch(X, y)
+            
+            moving_average_loss = moving_average_loss * ACCURACY_DECAY_RATE + loss * (1 - ACCURACY_DECAY_RATE)
+            loss_history.append(moving_average_loss)
+
+            print 'Loss:', loss
                     
             if ARE_CHECKPOINTS_ENABLED and id % CHECKPOINT_THRESHOLD == 0:
                 filename = '%s/model-weights-%s.h5' % (CHECKPOINT_DIRECTORY, id)
                 model.save_weights(filename)
+
+            if ARE_STORING_ACCURACIES and id % ACCURACIES_THRESHOLD == 0:
+                figure = plt.figure()
+                plt.plot(loss_history)
+                figure.suptitle('Loss Analysis')
+                plt.xlabel('Iterations')
+                plt.ylabel('Loss')
+
+                filename = '%s/model-accuracies.png' % ACCURACIES_DIRECTORY
+                figure.savefig(filename)
 
             model.reset_states()
 
@@ -91,13 +113,13 @@ def compose_piece(model, start_note):
 def objective(y_true, y_pred):
     epsilon = 1.0e-5
     
-    y_true = y_true.reshape((NUM_NOTES, OUTPUT_LAYER))
-    y_pred = y_pred.reshape((NUM_NOTES, OUTPUT_LAYER))
+    #y_true = y_true.reshape((NUM_TIMESTEPS, NUM_NOTES, OUTPUT_LAYER))
+    #y_pred = y_pred.reshape((NUM_TIMESTEPS, NUM_NOTES, OUTPUT_LAYER))
 
-    mask = y_true[:, 0]
+    mask = y_true[:, :, 0]
 
-    played_likelihoods = T.tensor.sum(T.tensor.log(2 * y_pred[:, 0] * y_true[:, 0] - y_pred[:, 0] - y_true[:, 0] + 1 + epsilon))
-    articulated_likelihoods = T.tensor.sum(mask * (T.tensor.log(2 * y_pred[:, 1] * y_true[:, 1] - y_pred[:, 1] - y_true[:, 1] + 1 + epsilon)))
+    played_likelihoods = T.tensor.sum(T.tensor.log(2 * y_pred[:, :, 0] * y_true[:, :, 0] - y_pred[:, :, 0] - y_true[:, :, 0] + 1 + epsilon))
+    articulated_likelihoods = T.tensor.sum(mask * (T.tensor.log(2 * y_pred[:, :, 1] * y_true[:, :, 1] - y_pred[:, :, 1] - y_true[:, :, 1] + 1 + epsilon)))
 
     return T.tensor.neg(played_likelihoods + articulated_likelihoods)
 
@@ -105,40 +127,44 @@ def objective(y_true, y_pred):
 unbroadcast = lambda x: T.tensor.unbroadcast(x, 0)
 get_shape = lambda x: x
 
-add_dimension_1 = lambda x: x.reshape([1, 1, NUM_NOTES, NUM_FEATURES])
-get_expanded_shape_1 = lambda shape: [1, 1, NUM_NOTES, NUM_FEATURES]
-remove_dimension_1 = lambda x: x.reshape([NUM_NOTES, 1, NUM_FEATURES])
-get_contracted_shape_1 = lambda shape: [NUM_NOTES, 1, NUM_FEATURES]
+add_dimension_1 = lambda x: x.reshape([1, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES])
+get_expanded_shape_1 = lambda shape: [1, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES]
+remove_dimension_1 = lambda x: x.reshape([NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES])
+get_contracted_shape_1 = lambda shape: [NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES]
 
-add_dimension_2 = lambda x: x.reshape([1, NUM_NOTES, 1, TIME_MODEL_LAYER_2])
-get_expanded_shape_2 = lambda shape: [1, NUM_NOTES, 1, TIME_MODEL_LAYER_2]
-remove_dimension_2 = lambda x: x.reshape([1, NUM_NOTES, TIME_MODEL_LAYER_2])
-get_contracted_shape_2 = lambda shape: [1, NUM_NOTES, TIME_MODEL_LAYER_2]
+add_dimension_2 = lambda x: x.reshape([1, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2])
+get_expanded_shape_2 = lambda shape: [1, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2]
+remove_dimension_2 = lambda x: x.reshape([NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2])
+get_contracted_shape_2 = lambda shape: [NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2]
 
 
 def main():
     model = Sequential([
-        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, input_shape=(NUM_NOTES, NUM_FEATURES)),
+        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, batch_input_shape=(NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
         Permute((2, 1, 3)),
         Lambda(remove_dimension_1, output_shape=get_contracted_shape_1),
 
-        LSTM(TIME_MODEL_LAYER_1, return_sequences=True, stateful=True),
-        Dropout(DROPOUT_PROBABILITY),
-        LSTM(TIME_MODEL_LAYER_2, return_sequences=True, stateful=True),
-        Dropout(DROPOUT_PROBABILITY),
+        LSTM(TIME_MODEL_LAYER_1, return_sequences=True),
+        # #Dropout(DROPOUT_PROBABILITY),
+        # BatchNormalization(),
+        LSTM(TIME_MODEL_LAYER_2, return_sequences=True),
+        # #Dropout(DROPOUT_PROBABILITY),
+        # BatchNormalization(),
 
         Lambda(add_dimension_2, output_shape=get_expanded_shape_2),
         Permute((2, 1, 3)),
         Lambda(remove_dimension_2, output_shape=get_contracted_shape_2),
 
-        Lambda(unbroadcast, output_shape=get_shape),
         LSTM(NOTE_MODEL_LAYER_1, return_sequences=True),
-        Dropout(DROPOUT_PROBABILITY),
+        # #Dropout(DROPOUT_PROBABILITY),
+        # BatchNormalization(),
         LSTM(NOTE_MODEL_LAYER_2, return_sequences=True),
-        Dropout(DROPOUT_PROBABILITY),
+        # #Dropout(DROPOUT_PROBABILITY),
+        # BatchNormalization(),
+
 
         TimeDistributed(Dense(OUTPUT_LAYER)),
-        Dropout(DROPOUT_PROBABILITY),
+        # BatchNormalization(),
 
         Activation('sigmoid')
     ])
