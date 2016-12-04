@@ -3,15 +3,16 @@ import argparse
 import theano as T
 import numpy as np
 from keras.models import Sequential
+from keras.optimizers import Adadelta
 from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout
 import piece_handler
 import repository_handler
 import data_parser
 
-NUM_EPOCHS = 10
+NUM_EPOCHS = 100
 NUM_TESTS = 10
 
-NUM_SEGMENTS = 500
+NUM_SEGMENTS = 100 
 NUM_TIMESTEPS = 128
 NUM_NOTES = 78
 NUM_FEATURES = 80
@@ -27,7 +28,7 @@ DROPOUT_PROBABILITY = 0.5
 
 ARE_CHECKPOINTS_ENABLED = True
 CHECKPOINT_DIRECTORY = 'checkpoints'
-CHECKPOINT_THRESHOLD = 200
+CHECKPOINT_THRESHOLD = 100
 
 
 def train(model, X_train, y_train):
@@ -40,8 +41,11 @@ def train(model, X_train, y_train):
             for timestep in xrange(NUM_TIMESTEPS):
                 X = np.expand_dims(X_train[segment, timestep], axis=0)
                 y = np.expand_dims(y_train[segment, timestep], axis=0)
-                model.train_on_batch(X, y)
+                result = model.train_on_batch(X, y)
 
+                if timestep % 20 == 0:
+                    print '(Loss, Accuracy):', result
+                    
             if ARE_CHECKPOINTS_ENABLED and id % CHECKPOINT_THRESHOLD == 0:
                 filename = '%s/model-weights-%s.h5' % (CHECKPOINT_DIRECTORY, id)
                 model.save_weights(filename)
@@ -50,14 +54,13 @@ def train(model, X_train, y_train):
 
 
 def test(model, X_test, y_test):
-    # TODO This function needs some work. It should iterate over NUM_TESTS, not NUM_SEGMENTS.
-    for segment in xrange(NUM_SEGMENTS):
-        print 'Testing on batch %s/%s...' % (segment + 1, NUM_SEGMENTS * NUM_EPOCHS)
+    for test in xrange(NUM_TESTS):
+        print 'Testing on batch %s/%s...' % (test + 1, NUM_TESTS * NUM_EPOCHS)
 
         for timestep in xrange(NUM_TIMESTEPS):
-            X = np.expand_dims(X_test[segment, timestep], axis=0)
-            y = np.expand_dims(y_test[segment, timestep], axis=0)
-            model.test_on_batch(X, y)
+            X = np.expand_dims(X_test[test, timestep], axis=0)
+            y = np.expand_dims(y_test[test, timestep], axis=0)
+            print '(Loss, Accuracy):', model.test_on_batch(X, y)
 
         model.reset_states()
 
@@ -83,6 +86,20 @@ def compose_piece(model, start_note):
         outputs.append(y_pred)
 
     return np.asarray(outputs)
+
+
+def objective(y_true, y_pred):
+    epsilon = 1.0e-5
+    
+    y_true = y_true.reshape((NUM_NOTES, OUTPUT_LAYER))
+    y_pred = y_pred.reshape((NUM_NOTES, OUTPUT_LAYER))
+
+    mask = y_true[:, 0]
+
+    played_likelihoods = T.tensor.sum(T.tensor.log(2 * y_pred[:, 0] * y_true[:, 0] - y_pred[:, 0] - y_true[:, 0] + 1 + epsilon))
+    articulated_likelihoods = T.tensor.sum(mask * (T.tensor.log(2 * y_pred[:, 1] * y_true[:, 1] - y_pred[:, 1] - y_true[:, 1] + 1 + epsilon)))
+
+    return T.tensor.neg(played_likelihoods + articulated_likelihoods)
 
 
 unbroadcast = lambda x: T.tensor.unbroadcast(x, 0)
@@ -125,7 +142,8 @@ def main():
 
         Activation('sigmoid')
     ])
-    model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
+    optimizer = Adadelta(lr=0.01, epsilon=1e-6)
+    model.compile(loss=objective, optimizer=optimizer, metrics=['accuracy'])
 
     print 'Retrieving repository...'
     repository = repository_handler.load_repository(args.repository)
@@ -156,3 +174,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     main()
+

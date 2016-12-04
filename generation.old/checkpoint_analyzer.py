@@ -1,15 +1,17 @@
 #!/usr/bin/env python
+import numpy as np
 import theano as T
 from keras.models import Sequential
 from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout
 import deep_jammer
 import repository_handler
 import piece_handler
+import data_parser
 
 NUM_EPOCHS = 10
 NUM_TESTS = 10
 
-NUM_SEGMENTS = 500
+NUM_SEGMENTS = 100 
 NUM_TIMESTEPS = 128
 NUM_NOTES = 78
 NUM_FEATURES = 80
@@ -20,7 +22,42 @@ NOTE_MODEL_LAYER_1 = 100
 NOTE_MODEL_LAYER_2 = 50
 OUTPUT_LAYER = 2
 
+PIECE_LENGTH = 200
 DROPOUT_PROBABILITY = 0.5
+
+def compose_piece(model, start_note):
+    inputs = [start_note]
+    outputs = []
+ 
+    cons = 1
+
+    for i in xrange(PIECE_LENGTH):
+        X_in = inputs[i]
+        y_pred = model.predict(X_in, batch_size=1).reshape((78, 2))
+
+        # Set the probabilities of the input to 0s and 1s through sampling
+        random_mask = np.random.uniform(size=y_pred.shape)
+        y_pred[:, 0] = (y_pred[:, 0] ** cons) > random_mask[:, 0]
+
+        nnotes = np.sum(y_pred[:, 0])
+
+        if nnotes < 2:
+            if cons > 1:
+                cons = 1
+
+            cons -= 0.02
+        else:
+            cons += (1 - cons) * 0.3
+
+        # Set articulate probabilities to 0 if the note is not played
+        y_pred[:, 1] = y_pred[:, 0] * (y_pred[:, 1]  > random_mask[:, 1]) 
+
+        input = np.array(data_parser.get_single_input_form(y_pred, i)).reshape((1, 78, 80))
+        
+        inputs.append(input)
+        outputs.append(y_pred)
+
+    return np.asarray(outputs)
 
 unbroadcast = lambda x: T.tensor.unbroadcast(x, 0)
 get_shape = lambda x: x
@@ -63,16 +100,16 @@ def main():
         Activation('sigmoid')
     ])
     model.compile(loss='categorical_crossentropy', optimizer='adadelta', metrics=['accuracy'])
-    model.load_weights('checkpoints/model-weights-200.h5')
+    model.load_weights('checkpoints/model-weights-3800.h5')
 
     print 'Generating the initial note of the piece...'
-    repository = repository_handler.load_repository('example-repository')
+    repository = repository_handler.load_repository('200-repository')
     X_train, _ = piece_handler.get_dataset(repository, 5)
     initial_note = X_train[0][0].reshape((1, 78, 80))
 
     print 'Generating a piece...'
-    piece = deep_jammer.compose_piece(model, initial_note)
-    piece_handler.save_piece(piece, 'test')
+    piece = compose_piece(model, initial_note)
+    piece_handler.save_piece(piece, 'samer')
 
 
 if __name__ == '__main__':
