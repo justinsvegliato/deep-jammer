@@ -28,12 +28,14 @@ DROPOUT_PROBABILITY = 0.5
 
 ARE_CHECKPOINTS_ENABLED = True
 CHECKPOINT_DIRECTORY = 'checkpoints'
-CHECKPOINT_THRESHOLD = 5
+CHECKPOINT_THRESHOLD = 1
 
 ARE_ACCURACIES_SAVED = True
 ACCURACIES_DIRECTORY = 'accuracies'
-ACCURACIES_THRESHOLD = 5
+ACCURACIES_THRESHOLD = 1
 ACCURACY_DECAY_RATE = 0.9
+
+GPU = True
 
 
 def train(model, pieces):
@@ -57,14 +59,27 @@ def train(model, pieces):
             model.save_weights(filename)
 
         if ARE_ACCURACIES_SAVED and epoch % ACCURACIES_THRESHOLD == 0:
-            figure = plt.figure()
-            plt.plot(loss_history)
-            figure.suptitle('Loss Analysis')
-            plt.xlabel('Iterations')
-            plt.ylabel('Loss')
+            
+            if GPU:
 
-            filename = '%s/model-accuracies.png' % ACCURACIES_DIRECTORY
-            figure.savefig(filename)
+                filename = '%s/model-accuracies.txt' % ACCURACIES_DIRECTORY
+
+                thefile = open(filename, 'w')
+
+                for i in loss_history:
+                    thefile.write("%s\n" % i)
+
+            else:
+
+                filename = '%s/model-accuracies.png' % ACCURACIES_DIRECTORY
+
+                figure = plt.figure()
+                plt.plot(loss_history)
+                figure.suptitle('Loss Analysis')
+                plt.xlabel('Iterations')
+                plt.ylabel('Loss')
+
+                figure.savefig(filename)
 
 
 def compose_piece(model, start_note):
