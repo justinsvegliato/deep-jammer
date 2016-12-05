@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 import argparse
-import theano as T
+import theano.tensor as T
 import numpy as np
-import matplotlib.pyplot as plt
 from keras.models import Sequential
-from keras.optimizers import Adadelta, Adam
+from keras.optimizers import Adadelta
 from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout, BatchNormalization
 import piece_handler
 import repository_handler
 import data_parser
 
-EPOCHS = 1
-BATCH_SIZE = 2
+EPOCHS = 2
+BATCH_SIZE = 5
 
 NUM_TIMESTEPS = 128
 NUM_NOTES = 78
@@ -26,6 +25,8 @@ OUTPUT_LAYER = 2
 PIECE_LENGTH = 200
 DROPOUT_PROBABILITY = 0.5
 
+EPSILON = np.spacing(np.float32(1.0))
+
 ARE_CHECKPOINTS_ENABLED = True
 CHECKPOINT_DIRECTORY = 'checkpoints'
 CHECKPOINT_THRESHOLD = 1
@@ -35,7 +36,7 @@ ACCURACIES_DIRECTORY = 'accuracies'
 ACCURACIES_THRESHOLD = 1
 ACCURACY_DECAY_RATE = 0.9
 
-GPU = True
+IS_GPU_USED = True
 
 
 def train(model, pieces):
@@ -59,17 +60,14 @@ def train(model, pieces):
             model.save_weights(filename)
 
         if ARE_ACCURACIES_SAVED and epoch % ACCURACIES_THRESHOLD == 0:
-            
-            if GPU:
-
+            if IS_GPU_USED:
                 filename = '%s/model-accuracies.txt' % ACCURACIES_DIRECTORY
 
-                thefile = open(filename, 'w')
-
-                for i in loss_history:
-                    thefile.write("%s\n" % i)
-
+                f = open(filename, 'w')
+                for moving_average_loss in loss_history:
+                    f.write('%s\n' % moving_average_loss)
             else:
+                import matplotlib.pyplot as plt
 
                 filename = '%s/model-accuracies.png' % ACCURACIES_DIRECTORY
 
@@ -102,15 +100,21 @@ def compose_piece(model, start_note):
     return np.asarray(outputs)
 
 
+# def objective(y_true, y_pred):
+#     played_likelihoods = T.sum(T.log(2 * y_pred[:, :, :, 0] * y_true[:, :, :, 0] - y_pred[:, :, :, 0] - y_true[:, :, :, 0] + 1 + EPSILON))
+#
+#     mask = y_true[:, :, :, 0]
+#     articulated_likelihoods = T.sum(mask * (T.log(2 * y_pred[:, :, :, 1] * y_true[:, :, :, 1] - y_pred[:, :, :, 1] - y_true[:, :, :, 1] + 1 + EPSILON)))
+#
+#     return T.neg(played_likelihoods + articulated_likelihoods)
+
 def objective(y_true, y_pred):
-    epsilon = 1.0e-5
+    active_notes = T.shape_padright(y_true[:, :, :, 0])
+    mask = T.concatenate([T.ones_like(active_notes), active_notes], axis=3)
 
-    played_likelihoods = T.tensor.sum(T.tensor.log(2 * y_pred[:, :, :, 0] * y_true[:, :, :, 0] - y_pred[:, :, :, 0] - y_true[:, :, :, 0] + 1 + epsilon))
+    log_likelihoods = mask * T.log(2 * y_pred * y_true[:, :] - y_pred - y_true[:, :] + 1 + EPSILON)
 
-    mask = y_true[:, :, :, 0]
-    articulated_likelihoods = T.tensor.sum(mask * (T.tensor.log(2 * y_pred[:, :, :, 1] * y_true[:, :, :, 1] - y_pred[:, :, :, 1] - y_true[:, :, :, 1] + 1 + epsilon)))
-
-    return T.tensor.neg(played_likelihoods + articulated_likelihoods)
+    return T.neg(T.sum(log_likelihoods))
 
 
 def get_training_model():
@@ -134,35 +138,30 @@ def get_training_model():
         Lambda(remove_dimension_1, output_shape=get_contracted_shape_1),
 
         LSTM(TIME_MODEL_LAYER_1, return_sequences=True),
-        # Dropout(DROPOUT_PROBABILITY),
-        BatchNormalization(),
+        Dropout(DROPOUT_PROBABILITY),
         LSTM(TIME_MODEL_LAYER_2, return_sequences=True),
-        # Dropout(DROPOUT_PROBABILITY),
-        BatchNormalization(),
+        Dropout(DROPOUT_PROBABILITY),
 
         Lambda(add_dimension_2, output_shape=get_expanded_shape_2),
         Permute((1, 3, 2, 4)),
         Lambda(remove_dimension_2, output_shape=get_contracted_shape_2),
 
         LSTM(NOTE_MODEL_LAYER_1, return_sequences=True),
-        # Dropout(DROPOUT_PROBABILITY),
-        BatchNormalization(),
+        Dropout(DROPOUT_PROBABILITY),
         LSTM(NOTE_MODEL_LAYER_2, return_sequences=True),
-        # Dropout(DROPOUT_PROBABILITY),
-        BatchNormalization(),
+        Dropout(DROPOUT_PROBABILITY),
 
         TimeDistributed(Dense(OUTPUT_LAYER)),
-        # Dropout(DROPOUT_PROBABILITY),
-        # BatchNormalization(),
+        Dropout(DROPOUT_PROBABILITY),
 
         Activation('sigmoid'),
 
         Lambda(reshape_1, output_shape=get_reshape_shape_1)
-
     ])
 
+
 def get_composition_model():
-    unbroadcast = lambda x: T.tensor.unbroadcast(x, 0)
+    unbroadcast = lambda x: T.unbroadcast(x, 0)
     get_shape = lambda x: x
 
     add_dimension_1 = lambda x: x.reshape([1, 1, NUM_NOTES, NUM_FEATURES])
@@ -184,11 +183,9 @@ def get_composition_model():
         Lambda(remove_dimension_1, output_shape=get_contracted_shape_1),
 
         LSTM(TIME_MODEL_LAYER_1, return_sequences=True),
-        # Dropout(DROPOUT_PROBABILITY),
-        BatchNormalization(),
+        Dropout(DROPOUT_PROBABILITY),
         LSTM(TIME_MODEL_LAYER_2, return_sequences=True),
-        # Dropout(DROPOUT_PROBABILITY),
-        BatchNormalization(),
+        Dropout(DROPOUT_PROBABILITY),
 
         Lambda(add_dimension_2, output_shape=get_expanded_shape_2),
         Permute((2, 1, 3)),
@@ -196,29 +193,26 @@ def get_composition_model():
 
         Lambda(unbroadcast, output_shape=get_shape),
         LSTM(NOTE_MODEL_LAYER_1, return_sequences=True),
-        # Dropout(DROPOUT_PROBABILITY),
-        BatchNormalization(),
+        Dropout(DROPOUT_PROBABILITY),
         LSTM(NOTE_MODEL_LAYER_2, return_sequences=True),
-        # Dropout(DROPOUT_PROBABILITY),
-        BatchNormalization(),
+        Dropout(DROPOUT_PROBABILITY),
 
         TimeDistributed(Dense(OUTPUT_LAYER)),
-        # Dropout(DROPOUT_PROBABILITY),
+        Dropout(DROPOUT_PROBABILITY),
 
         Activation('sigmoid'),
 
         Lambda(reshape_1, output_shape=get_reshape_shape_1)
     ])
 
+
 def main():
     print 'Generating the training model...'
     training_model = get_training_model()
 
-    print 'Generating the composition model'
-    composition_model = get_composition_model()
-
     print 'Compiling the training model...'
-    optimizer = Adadelta()
+    # Note that these settings are based on the post (which uses lr=0.01 and eps=1e-6)
+    optimizer = Adadelta(lr=0.01, epsilon=1e-6)
     training_model.compile(loss=objective, optimizer=optimizer, metrics=['accuracy'])
 
     print 'Retrieving the repository...'
