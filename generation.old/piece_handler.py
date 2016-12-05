@@ -13,17 +13,9 @@ DIVISION_LENGTH = 16
 DIRECTORY = 'art'
 
 
-# TODO Clean up this method
-def get_dataset(pieces, size):
-    X = []
-    y = []
-
-    for _ in xrange(size):
-        segment = get_segment(pieces)
-        X.append(segment[0])
-        y.append(segment[1])
-
-    return np.array(X), np.array(y)
+def get_piece_batch(pieces, batch_size):
+    inputs, outputs = zip(*[get_segment(pieces) for _ in range(batch_size)])
+    return np.array(inputs), np.array(outputs)
 
 
 def get_segment(pieces):
