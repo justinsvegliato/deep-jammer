@@ -9,10 +9,10 @@ import piece_handler
 import repository_handler
 import data_parser
 
-EPOCHS = 2
+EPOCHS = 10000
 BATCH_SIZE = 5
 
-NUM_TIMESTEPS = 128
+NUM_TIMESTEPS = 127
 NUM_NOTES = 78
 NUM_FEATURES = 80
 
@@ -29,14 +29,14 @@ EPSILON = np.spacing(np.float32(1.0))
 
 ARE_CHECKPOINTS_ENABLED = True
 CHECKPOINT_DIRECTORY = 'checkpoints'
-CHECKPOINT_THRESHOLD = 1
+CHECKPOINT_THRESHOLD = 50
 
 ARE_ACCURACIES_SAVED = True
 ACCURACIES_DIRECTORY = 'accuracies'
-ACCURACIES_THRESHOLD = 1
+ACCURACIES_THRESHOLD = 50
 ACCURACY_DECAY_RATE = 0.9
 
-IS_GPU_USED = True
+IS_GPU_USED = False 
 
 
 def train(model, pieces):
@@ -112,7 +112,7 @@ def objective(y_true, y_pred):
     active_notes = T.shape_padright(y_true[:, :, :, 0])
     mask = T.concatenate([T.ones_like(active_notes), active_notes], axis=3)
 
-    log_likelihoods = mask * T.log(2 * y_pred * y_true[:, :] - y_pred - y_true[:, :] + 1 + EPSILON)
+    log_likelihoods = mask * T.log(2 * y_pred * y_true - y_pred - y_true + 1 + EPSILON)
 
     return T.neg(T.sum(log_likelihoods))
 

@@ -15,16 +15,16 @@ DIRECTORY = 'art'
 
 def get_piece_batch(pieces, batch_size):
     inputs, outputs = zip(*[get_segment(pieces) for _ in range(batch_size)])
-    return np.array(inputs), np.array(outputs)
+    return np.array(inputs)[:, :-1], np.array(outputs)[:, 1:]
 
 
 def get_segment(pieces):
-    selected_pieces = random.choice(pieces.values())
+    selected_piece = random.choice(pieces.values())
 
-    start_index = random.randrange(0, len(selected_pieces) - SEGMENT_LENGTH, DIVISION_LENGTH)
+    start_index = random.randrange(0, len(selected_piece) - SEGMENT_LENGTH, DIVISION_LENGTH)
     end_index = start_index + SEGMENT_LENGTH
 
-    output = selected_pieces[start_index:end_index]
+    output = selected_piece[start_index:end_index]
     input = data_parser.get_multiple_input_forms(output)
 
     return input, output

@@ -44,5 +44,5 @@ def get_single_input_form(state, time):
 
 
 def get_multiple_input_forms(statematrix):
-    inputform = [get_single_input_form(state, time) for time, state in enumerate(statematrix)]
-    return inputform
+    return [get_single_input_form(state, time) for time, state in enumerate(statematrix)]
+
