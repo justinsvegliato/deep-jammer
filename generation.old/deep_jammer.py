@@ -10,8 +10,8 @@ import piece_handler
 import repository_handler
 import data_parser
 
-EPOCHS = 1000
-BATCH_SIZE = 10
+EPOCHS = 1
+BATCH_SIZE = 2
 
 NUM_TIMESTEPS = 128
 NUM_NOTES = 78
@@ -45,13 +45,12 @@ def train(model, pieces):
 
         X, y = piece_handler.get_piece_batch(pieces, BATCH_SIZE)
 
-        for piece_id in xrange(BATCH_SIZE):
-            loss, _ = model.train_on_batch(X[piece_id], y[piece_id])
+        loss, _ = model.train_on_batch(X, y)
             
-            moving_average_loss = moving_average_loss * ACCURACY_DECAY_RATE + loss * (1 - ACCURACY_DECAY_RATE)
-            loss_history.append(moving_average_loss)
+        moving_average_loss = moving_average_loss * ACCURACY_DECAY_RATE + loss * (1 - ACCURACY_DECAY_RATE)
+        loss_history.append(moving_average_loss)
 
-            print 'Loss =', loss
+        print 'Loss =', loss
 
         if ARE_CHECKPOINTS_ENABLED and epoch % CHECKPOINT_THRESHOLD == 0:
             filename = '%s/model-weights-%s.h5' % (CHECKPOINT_DIRECTORY, epoch)
@@ -91,28 +90,32 @@ def compose_piece(model, start_note):
 def objective(y_true, y_pred):
     epsilon = 1.0e-5
 
-    played_likelihoods = T.tensor.sum(T.tensor.log(2 * y_pred[:, :, 0] * y_true[:, :, 0] - y_pred[:, :, 0] - y_true[:, :, 0] + 1 + epsilon))
+    played_likelihoods = T.tensor.sum(T.tensor.log(2 * y_pred[:, :, :, 0] * y_true[:, :, :, 0] - y_pred[:, :, :, 0] - y_true[:, :, :, 0] + 1 + epsilon))
 
-    mask = y_true[:, :, 0]
-    articulated_likelihoods = T.tensor.sum(mask * (T.tensor.log(2 * y_pred[:, :, 1] * y_true[:, :, 1] - y_pred[:, :, 1] - y_true[:, :, 1] + 1 + epsilon)))
+    mask = y_true[:, :, :, 0]
+    articulated_likelihoods = T.tensor.sum(mask * (T.tensor.log(2 * y_pred[:, :, :, 1] * y_true[:, :, :, 1] - y_pred[:, :, :, 1] - y_true[:, :, :, 1] + 1 + epsilon)))
 
     return T.tensor.neg(played_likelihoods + articulated_likelihoods)
 
 
 def get_training_model():
-    add_dimension_1 = lambda x: x.reshape([1, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES])
-    get_expanded_shape_1 = lambda shape: [1, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES]
-    remove_dimension_1 = lambda x: x.reshape([NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES])
-    get_contracted_shape_1 = lambda shape: [NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES]
+    add_dimension_1 = lambda x: x.reshape([1, BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES])
+    get_expanded_shape_1 = lambda shape: [1, BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES]
+    remove_dimension_1 = lambda x: x.reshape([BATCH_SIZE * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES])
+    get_contracted_shape_1 = lambda shape: [BATCH_SIZE * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES]
 
-    add_dimension_2 = lambda x: x.reshape([1, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2])
-    get_expanded_shape_2 = lambda shape: [1, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2]
-    remove_dimension_2 = lambda x: x.reshape([NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2])
-    get_contracted_shape_2 = lambda shape: [NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2]
+    add_dimension_2 = lambda x: x.reshape([1, BATCH_SIZE, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2])
+    get_expanded_shape_2 = lambda shape: [1, BATCH_SIZE, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2]
+    remove_dimension_2 = lambda x: x.reshape([BATCH_SIZE * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2])
+    get_contracted_shape_2 = lambda shape: [BATCH_SIZE * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2]
+
+    reshape_1 = lambda x: x.reshape([BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, OUTPUT_LAYER])
+    get_reshape_shape_1 = lambda shape: [BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, OUTPUT_LAYER]
+
 
     return Sequential([
-        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, batch_input_shape=(NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
-        Permute((2, 1, 3)),
+        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, batch_input_shape=(BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
+        Permute((1, 3, 2, 4)),
         Lambda(remove_dimension_1, output_shape=get_contracted_shape_1),
 
         LSTM(TIME_MODEL_LAYER_1, return_sequences=True),
@@ -123,7 +126,7 @@ def get_training_model():
         BatchNormalization(),
 
         Lambda(add_dimension_2, output_shape=get_expanded_shape_2),
-        Permute((2, 1, 3)),
+        Permute((1, 3, 2, 4)),
         Lambda(remove_dimension_2, output_shape=get_contracted_shape_2),
 
         LSTM(NOTE_MODEL_LAYER_1, return_sequences=True),
@@ -137,9 +140,11 @@ def get_training_model():
         # Dropout(DROPOUT_PROBABILITY),
         # BatchNormalization(),
 
-        Activation('sigmoid')
-    ])
+        Activation('sigmoid'),
 
+        Lambda(reshape_1, output_shape=get_reshape_shape_1)
+
+    ])
 
 def get_composition_model():
     unbroadcast = lambda x: T.tensor.unbroadcast(x, 0)
@@ -154,6 +159,9 @@ def get_composition_model():
     get_expanded_shape_2 = lambda shape: [1, NUM_NOTES, 1, TIME_MODEL_LAYER_2]
     remove_dimension_2 = lambda x: x.reshape([1, NUM_NOTES, TIME_MODEL_LAYER_2])
     get_contracted_shape_2 = lambda shape: [1, NUM_NOTES, TIME_MODEL_LAYER_2]
+
+    reshape_1 = lambda x: x.reshape([1, 1, NUM_NOTES, OUTPUT_LAYER])
+    get_reshape_shape_1 = lambda shape: [1, 1, NUM_NOTES, OUTPUT_LAYER]
 
     return Sequential([
         Lambda(add_dimension_1, output_shape=get_expanded_shape_1, input_shape=(NUM_NOTES, NUM_FEATURES)),
@@ -182,16 +190,20 @@ def get_composition_model():
         TimeDistributed(Dense(OUTPUT_LAYER)),
         # Dropout(DROPOUT_PROBABILITY),
 
-        Activation('sigmoid')
-    ])
+        Activation('sigmoid'),
 
+        Lambda(reshape_1, output_shape=get_reshape_shape_1)
+    ])
 
 def main():
     print 'Generating the training model...'
     training_model = get_training_model()
 
+    print 'Generating the composition model'
+    composition_model = get_composition_model()
+
     print 'Compiling the training model...'
-    optimizer = Adam(lr=0.01)
+    optimizer = Adadelta()
     training_model.compile(loss=objective, optimizer=optimizer, metrics=['accuracy'])
 
     print 'Retrieving the repository...'
