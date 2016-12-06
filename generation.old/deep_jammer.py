@@ -4,7 +4,7 @@ import theano.tensor as T
 import numpy as np
 from keras.models import Sequential
 from keras.optimizers import Adadelta
-from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout, BatchNormalization
+from keras.layers import LSTM, TimeDistributed, Dense, Activation, Permute, Lambda, Dropout, BatchNormalization, Merge
 import piece_handler
 import repository_handler
 import data_parser
@@ -46,7 +46,16 @@ def train(model, pieces):
 
         X, y = piece_handler.get_piece_batch(pieces, BATCH_SIZE)
 
-        loss, _ = model.train_on_batch(X, y)
+        # npad = ((0,0), (0,0), (1,0), (0,1))
+        # y_dummy = np.pad(y[:, :, :-1, :], pad_width=npad, mode='constant', constant_values=0)
+        
+
+        # y_dummy.reshape(BATCH_SIZE * )
+
+        # (BATCH_SIZE * NUM_NOTES, NUM_TIMESTEPS, OUTPUT_LAYER)
+
+
+        loss, _ = model.train_on_batch([X, y], y)
         print 'Loss =', loss
 
         loss_history.append(loss)
@@ -119,39 +128,78 @@ def get_training_model():
     remove_dimension_1 = lambda x: x.reshape([BATCH_SIZE * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES])
     get_contracted_shape_1 = lambda shape: [BATCH_SIZE * NUM_NOTES, NUM_TIMESTEPS, NUM_FEATURES]
 
-    add_dimension_2 = lambda x: x.reshape([1, BATCH_SIZE, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2])
-    get_expanded_shape_2 = lambda shape: [1, BATCH_SIZE, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2]
-    remove_dimension_2 = lambda x: x.reshape([BATCH_SIZE * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2])
-    get_contracted_shape_2 = lambda shape: [BATCH_SIZE * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2]
+    add_dimension_2 = lambda x: x.reshape([1, BATCH_SIZE, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2 + OUTPUT_LAYER])
+    get_expanded_shape_2 = lambda shape: [1, BATCH_SIZE, NUM_NOTES, NUM_TIMESTEPS, TIME_MODEL_LAYER_2 + OUTPUT_LAYER]
+    remove_dimension_2 = lambda x: x.reshape([BATCH_SIZE * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2 + OUTPUT_LAYER])
+    get_contracted_shape_2 = lambda shape: [BATCH_SIZE * NUM_TIMESTEPS, NUM_NOTES, TIME_MODEL_LAYER_2 + OUTPUT_LAYER]
 
     reshape_1 = lambda x: x.reshape([BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, OUTPUT_LAYER])
     get_reshape_shape_1 = lambda shape: [BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, OUTPUT_LAYER]
 
+    def y_labels(y): 
+        start_note_values = T.alloc(np.array(0, dtype=np.int8), BATCH_SIZE * NUM_TIMESTEPS, 1, OUTPUT_LAYER)
+        correct_choices = y[:, :, :-1, :].reshape((BATCH_SIZE * NUM_TIMESTEPS, NUM_NOTES - 1, OUTPUT_LAYER))        
+        features = T.concatenate([start_note_values, correct_choices], axis=1)
+        return features.reshape((BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, OUTPUT_LAYER)).transpose((0, 2, 1, 3)).reshape((BATCH_SIZE * NUM_NOTES, NUM_TIMESTEPS, OUTPUT_LAYER))
+
+    get_labels_shape = lambda shape: [BATCH_SIZE * NUM_NOTES, NUM_TIMESTEPS, OUTPUT_LAYER]
+
+    time_model = Sequential([
+        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, batch_input_shape=(BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES), name='add_dimension_1'),
+        Permute((1, 3, 2, 4), name='permute_1'),
+        Lambda(remove_dimension_1, output_shape=get_contracted_shape_1, name='remove_dimension_1'),
+
+        LSTM(TIME_MODEL_LAYER_1, return_sequences=True, name='time_LSTM_1'),
+        Dropout(DROPOUT_PROBABILITY, name='dropout_1'),
+        LSTM(TIME_MODEL_LAYER_2, return_sequences=True, name='time_LSTM_2'),
+        Dropout(DROPOUT_PROBABILITY, name='dropout_2')
+    ])
+
+    # TODO Verify batch_input_shape
+    previous_notes = Sequential([
+        Lambda(y_labels, output_shape=get_labels_shape, batch_input_shape=(BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, OUTPUT_LAYER), name='y_labels')
+    ])
 
     return Sequential([
-        Lambda(add_dimension_1, output_shape=get_expanded_shape_1, batch_input_shape=(BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
-        Permute((1, 3, 2, 4)),
-        Lambda(remove_dimension_1, output_shape=get_contracted_shape_1),
+        Merge([time_model, previous_notes], mode='concat', concat_axis=2, name='merge_layer'), 
+        Lambda(add_dimension_2, output_shape=get_expanded_shape_2, name='add_dimension_2'),
+        Permute((1, 3, 2, 4), name='permute_2'),
+        Lambda(remove_dimension_2, output_shape=get_contracted_shape_2, name='remove_dimension_2'),
 
-        LSTM(TIME_MODEL_LAYER_1, return_sequences=True),
-        Dropout(DROPOUT_PROBABILITY),
-        LSTM(TIME_MODEL_LAYER_2, return_sequences=True),
-        Dropout(DROPOUT_PROBABILITY),
-
-        Lambda(add_dimension_2, output_shape=get_expanded_shape_2),
-        Permute((1, 3, 2, 4)),
-        Lambda(remove_dimension_2, output_shape=get_contracted_shape_2),
-
-        LSTM(NOTE_MODEL_LAYER_1, return_sequences=True),
-        Dropout(DROPOUT_PROBABILITY),
-        LSTM(NOTE_MODEL_LAYER_2, return_sequences=True),
-        Dropout(DROPOUT_PROBABILITY),
-
-        TimeDistributed(Dense(OUTPUT_LAYER)),
-        Activation('sigmoid'),
+        LSTM(NOTE_MODEL_LAYER_1, return_sequences=True, name='note_LSTM_1'),
+        Dropout(DROPOUT_PROBABILITY, name='dropout_3'),
+        LSTM(NOTE_MODEL_LAYER_2, return_sequences=True, name='note_LSTM_2'),
+        Dropout(DROPOUT_PROBABILITY, name='dropout_4'),
+        TimeDistributed(Dense(OUTPUT_LAYER, name='dense')),
+        Activation('sigmoid', name='sigmoid'),
 
         Lambda(reshape_1, output_shape=get_reshape_shape_1)
     ])
+
+    # return Sequential([
+        # Lambda(add_dimension_1, output_shape=get_expanded_shape_1, batch_input_shape=(BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, NUM_FEATURES)),
+        # Permute((1, 3, 2, 4)),
+        # Lambda(remove_dimension_1, output_shape=get_contracted_shape_1),
+
+        # LSTM(TIME_MODEL_LAYER_1, return_sequences=True),
+        # Dropout(DROPOUT_PROBABILITY),
+        # LSTM(TIME_MODEL_LAYER_2, return_sequences=True),
+        # Dropout(DROPOUT_PROBABILITY),
+
+        # Lambda(add_dimension_2, output_shape=get_expanded_shape_2),
+        # Permute((1, 3, 2, 4)),
+        # Lambda(remove_dimension_2, output_shape=get_contracted_shape_2),
+
+        # LSTM(NOTE_MODEL_LAYER_1, return_sequences=True),
+        # Dropout(DROPOUT_PROBABILITY),
+        # LSTM(NOTE_MODEL_LAYER_2, return_sequences=True),
+        # Dropout(DROPOUT_PROBABILITY),
+
+    #     TimeDistributed(Dense(OUTPUT_LAYER)),
+    #     Activation('sigmoid'),
+
+    #     Lambda(reshape_1, output_shape=get_reshape_shape_1)
+    # ])
 
 
 def get_composition_model():
