@@ -30,6 +30,7 @@ def main():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate a repository of MIDI files.')
     parser.add_argument('name', metavar='name', help='the name of the new repository')
+
     args = parser.parse_args()
 
     main()

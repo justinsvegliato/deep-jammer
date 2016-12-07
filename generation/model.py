@@ -1,10 +1,18 @@
-import theano, theano.tensor as T
 import numpy as np
-import theano_lstm
-
+import theano, theano.tensor as T
 from out_to_in_op import OutputFormToInputFormOp
+from pass_through_layer import PassThroughLayer
+from theano_lstm import LSTM, StackedCells, Layer, create_optimization_updates, MultiDropout
 
-from theano_lstm import Embedding, LSTM, RNN, StackedCells, Layer, create_optimization_updates, masked_loss, MultiDropout
+TIME_MODEL_INPUT_SIZE = 80
+TIME_MODEL_LAYERS = [300, 300]
+
+NODE_MODEL_INPUT_SIZE = TIME_MODEL_LAYERS[-1] + 2
+NOTE_MODEL_LAYERS = [100, 50]
+
+OUTPUT_SIZE = 2
+
+DROPOUT_PROBABILITY = 0.5
 
 
 def has_hidden(layer):
@@ -30,25 +38,6 @@ def initial_state_with_taps(layer, dimensions=None):
         return None
 
 
-class PassthroughLayer(Layer):
-    def __init__(self):
-        self.is_recursive = False
-
-    def create_variables(self):
-        pass
-
-    def activate(self, x):
-        return x
-
-    @property
-    def params(self):
-        return []
-
-    @params.setter
-    def params(self, param_list):
-        pass
-
-
 def get_last_layer(result):
     if isinstance(result, list):
         return result[-1]
@@ -64,25 +53,12 @@ def ensure_list(result):
 
 
 class Model(object):
-    def __init__(self, t_layer_sizes, p_layer_sizes, dropout=0):
+    def __init__(self):
+        self.time_model = StackedCells(TIME_MODEL_INPUT_SIZE, celltype=LSTM, layers=TIME_MODEL_LAYERS)
+        self.time_model.layers.append(PassThroughLayer())
 
-        self.t_layer_sizes = t_layer_sizes
-        self.p_layer_sizes = p_layer_sizes
-
-        # From our architecture definition, size of the notewise input
-        self.t_input_size = 80
-
-        # time network maps from notewise input size to various hidden sizes
-        self.time_model = StackedCells(self.t_input_size, celltype=LSTM, layers=t_layer_sizes)
-        self.time_model.layers.append(PassthroughLayer())
-
-        # pitch network takes last layer of time model and state of last note, moving upward
-        # and eventually ends with a two-element sigmoid layer
-        p_input_size = t_layer_sizes[-1] + 2
-        self.pitch_model = StackedCells(p_input_size, celltype=LSTM, layers=p_layer_sizes)
-        self.pitch_model.layers.append(Layer(p_layer_sizes[-1], 2, activation=T.nnet.sigmoid))
-
-        self.dropout = dropout
+        self.pitch_model = StackedCells(NODE_MODEL_INPUT_SIZE, celltype=LSTM, layers=NOTE_MODEL_LAYERS)
+        self.pitch_model.layers.append(Layer(NOTE_MODEL_LAYERS[-1], OUTPUT_SIZE, activation=T.nnet.sigmoid))
 
         self.conservativity = T.fscalar()
         self.srng = T.shared_randomstreams.RandomStreams(np.random.randint(0, 1024))
@@ -116,27 +92,24 @@ class Model(object):
             l.initial_hidden_state.set_value(val.get_value())
 
     def setup_train(self):
-
-        # dimensions: (batch, time, notes, input_data) with input_data as in architecture
         self.input_mat = T.btensor4()
-        # dimensions: (batch, time, notes, onOrArtic) with 0:on, 1:artic
         self.output_mat = T.btensor4()
 
         self.epsilon = np.spacing(np.float32(1.0))
 
         def step_time(in_data, *other):
             other = list(other)
-            split = -len(self.t_layer_sizes) if self.dropout else len(other)
+            split = -len(TIME_MODEL_LAYERS) if DROPOUT_PROBABILITY else len(other)
             hiddens = other[:split]
-            masks = [None] + other[split:] if self.dropout else []
+            masks = [None] + other[split:] if DROPOUT_PROBABILITY else []
             new_states = self.time_model.forward(in_data, prev_hiddens=hiddens, dropout=masks)
             return new_states
 
         def step_note(in_data, *other):
             other = list(other)
-            split = -len(self.p_layer_sizes) if self.dropout else len(other)
+            split = -len(NOTE_MODEL_LAYERS) if DROPOUT_PROBABILITY else len(other)
             hiddens = other[:split]
-            masks = [None] + other[split:] if self.dropout else []
+            masks = [None] + other[split:] if DROPOUT_PROBABILITY else []
             new_states = self.pitch_model.forward(in_data, prev_hiddens=hiddens, dropout=masks)
             return new_states
 
@@ -148,9 +121,8 @@ class Model(object):
         num_time_parallel = time_inputs.shape[1]
 
         # apply dropout
-        if self.dropout > 0:
-            time_masks = theano_lstm.MultiDropout([(num_time_parallel, shape) for shape in self.t_layer_sizes],
-                                                  self.dropout)
+        if DROPOUT_PROBABILITY > 0:
+            time_masks = MultiDropout([(num_time_parallel, shape) for shape in TIME_MODEL_LAYERS], DROPOUT_PROBABILITY)
         else:
             time_masks = []
 
@@ -182,9 +154,8 @@ class Model(object):
         num_timebatch = note_inputs.shape[1]
 
         # apply dropout
-        if self.dropout > 0:
-            pitch_masks = theano_lstm.MultiDropout([(num_timebatch, shape) for shape in self.p_layer_sizes],
-                                                   self.dropout)
+        if DROPOUT_PROBABILITY > 0:
+            pitch_masks = MultiDropout([(num_timebatch, shape) for shape in NOTE_MODEL_LAYERS], DROPOUT_PROBABILITY)
         else:
             pitch_masks = []
 
@@ -236,8 +207,8 @@ class Model(object):
         in_data = T.concatenate([in_data_from_time, in_data_from_prev])
 
         # correct for dropout
-        if self.dropout > 0:
-            masks = [1 - self.dropout for layer in self.pitch_model.layers]
+        if DROPOUT_PROBABILITY > 0:
+            masks = [1 - DROPOUT_PROBABILITY for layer in self.pitch_model.layers]
             masks[0] = None
         else:
             masks = []
@@ -269,8 +240,8 @@ class Model(object):
             time = states[-1]
 
             # correct for dropout
-            if self.dropout > 0:
-                masks = [1 - self.dropout for layer in self.time_model.layers]
+            if DROPOUT_PROBABILITY > 0:
+                masks = [1 - DROPOUT_PROBABILITY for layer in self.time_model.layers]
                 masks[0] = None
             else:
                 masks = []
@@ -336,8 +307,8 @@ class Model(object):
                              self.time_model.layers if has_hidden(layer)]
 
         # correct for dropout
-        if self.dropout > 0:
-            masks = [1 - self.dropout for layer in self.time_model.layers]
+        if DROPOUT_PROBABILITY > 0:
+            masks = [1 - DROPOUT_PROBABILITY for layer in self.time_model.layers]
             masks[0] = None
         else:
             masks = []

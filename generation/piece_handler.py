@@ -4,11 +4,13 @@ import midi
 import numpy as np
 import data_parser
 
-SEGMENT_LENGTH = 16 * 8
+SEGMENT_LENGTH = 128
 DIVISION_LENGTH = 16
 
 LOWER_BOUND = 24
 UPPER_BOUND = 102
+
+MIDI_FILE_EXTENSION = '.mid'
 
 
 def get_pieces(path):
@@ -18,7 +20,7 @@ def get_pieces(path):
         file_name = file[:-4]
         extension = file[-4:]
 
-        if extension.lower() != '.mid':
+        if extension.lower() != MIDI_FILE_EXTENSION:
             continue
 
         file_path = os.path.join(path, file)
@@ -49,6 +51,7 @@ def get_piece_batch(pieces, batch_size):
     return np.array(inputs), np.array(outputs)
 
 
+# TODO Clean this method
 def get_piece(midi_file):
     pattern = midi.read_midifile(midi_file)
 
@@ -68,7 +71,6 @@ def get_piece(midi_file):
             # Crossed a note boundary. Create a new state, defaulting to holding notes
             old_state = state
 
-            print old_state
             state = [[old_state[x][0], 0] for x in xrange(span)]
             state_matrix.append(state)
 
@@ -110,8 +112,10 @@ def get_piece(midi_file):
     return state_matrix
 
 
-def save_piece(piece, name):
+# TODO Clean this method
+def save_piece(piece, file_path):
     piece = np.asarray(piece)
+
     pattern = midi.Pattern()
     track = midi.Track()
     pattern.append(track)
@@ -147,4 +151,4 @@ def save_piece(piece, name):
     eot = midi.EndOfTrackEvent(tick=1)
     track.append(eot)
 
-    midi.write_midifile("{}.mid".format(name), pattern)
+    midi.write_midifile(file_path, pattern)
