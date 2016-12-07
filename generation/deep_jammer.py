@@ -13,7 +13,7 @@ DROPOUT_PROBABILITY = 0.5
 INITIAL_MULTIPLIER = 1
 
 DEFAULT_EPOCHS = 10000
-DEFAULT_BATCH_SIZE = 10
+DEFAULT_BATCH_SIZE = 2
 DEFAULT_LENGTH = 5
 
 ART_DIRECTORY = 'art/'
@@ -23,7 +23,7 @@ SAMPLE_DIRECTORY = 'samples/'
 WEIGHTS_FILE_NAME = 'weights-%s.p'
 SAMPLE_FILE_NAME = 'sample-%s.mid'
 
-SUMMARY_THRESHOLD = 25
+SUMMARY_THRESHOLD = 1
 CHECKPOINT_THRESHOLD = 100
 
 
@@ -60,7 +60,7 @@ def train(model, pieces, epochs, batch_size):
             display_summary(epoch, batch_size, loss)
 
         if epoch % CHECKPOINT_THRESHOLD == 0:
-            print 'Saving checkpoint...'
+            print 'Epoch %s: Saving checkpoint...' % epoch
             save_weights(model, epoch)
             save_sample(model, epoch, pieces)
 
@@ -99,7 +99,7 @@ def main():
     pieces = repository_handler.load_repository(args.repository)
 
     print 'Generating Deep Jammer...'
-    deep_jammer = model.Model(TIME_MODEL_LAYERS, NOTE_MODEL_LAYERS, dropout=DROPOUT_PROBABILITY)
+    deep_jammer = model.Model(TIME_MODEL_LAYERS, NOTE_MODEL_LAYERS, DROPOUT_PROBABILITY)
 
     print 'Training Deep Jammer...'
     train(deep_jammer, pieces, args.epochs, args.batch_size)
