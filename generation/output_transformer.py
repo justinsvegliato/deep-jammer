@@ -1,9 +1,10 @@
-import theano, theano.tensor as T
+import theano
+import theano.tensor as T
 import numpy as np
 import data_parser
 
 
-class OutputFormToInputFormOp(theano.Op):
+class OutputTransformer(theano.Op):
     __props__ = ()
 
     def make_node(self, state, time):
@@ -14,3 +15,6 @@ class OutputFormToInputFormOp(theano.Op):
     def perform(self, node, inputs_storage, output_storage):
         state, time = inputs_storage
         output_storage[0][0] = np.array(data_parser.get_single_input_form(state, time), dtype='int8')
+
+    def R_op(self, inputs, eval_points):
+        pass

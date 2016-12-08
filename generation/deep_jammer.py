@@ -10,8 +10,6 @@ TIME_MODEL_LAYERS = [300, 300]
 NOTE_MODEL_LAYERS = [100, 50]
 DROPOUT_PROBABILITY = 0.5
 
-INITIAL_MULTIPLIER = 1
-
 DEFAULT_EPOCHS = 10000
 DEFAULT_BATCH_SIZE = 2
 DEFAULT_LENGTH = 5
@@ -24,7 +22,7 @@ WEIGHTS_FILE_NAME = 'weights-%s.p'
 SAMPLE_FILE_NAME = 'sample-%s.mid'
 
 SUMMARY_THRESHOLD = 1
-CHECKPOINT_THRESHOLD = 100
+CHECKPOINT_THRESHOLD = 1
 
 
 def display_summary(epoch, batch_size, loss):
@@ -39,14 +37,14 @@ def save_weights(model, epoch=False):
     weights_path = WEIGHTS_DIRECTORY + WEIGHTS_FILE_NAME % tag
     weights_file = open(weights_path, 'wb')
 
-    pickle.dump(model.learned_config, weights_file)
+    pickle.dump(model.configuration, weights_file)
 
 
 def save_sample(model, epoch, pieces):
     input, output = map(np.array, piece_handler.get_segment(pieces))
 
     # TODO Do we need the extra parenthesis?
-    sample_art = np.concatenate((np.expand_dims(output[0], 0), model.predict_fun(piece_handler.SEGMENT_LENGTH, 1, input[0])), axis=0)
+    sample_art = np.concatenate((np.expand_dims(output[0], 0), model.predict(piece_handler.SEGMENT_LENGTH, input[0])), axis=0)
     sample_art_path = SAMPLE_DIRECTORY + SAMPLE_FILE_NAME % epoch
 
     piece_handler.save_piece(sample_art, sample_art_path)
@@ -54,7 +52,7 @@ def save_sample(model, epoch, pieces):
 
 def train(model, pieces, epochs, batch_size):
     for epoch in xrange(epochs):
-        loss = model.update_fun(*piece_handler.get_piece_batch(pieces, batch_size))
+        loss = model.update(*piece_handler.get_piece_batch(pieces, batch_size))
 
         if epoch % SUMMARY_THRESHOLD == 0:
             display_summary(epoch, batch_size, loss)
@@ -63,35 +61,6 @@ def train(model, pieces, epochs, batch_size):
             print 'Epoch %s: Saving checkpoint...' % epoch
             save_weights(model, epoch)
             save_sample(model, epoch, pieces)
-
-
-def get_updated_multiplier(multiplier, results):
-    note_count = np.sum(results[-1][:, 0])
-
-    if note_count < 2:
-        if multiplier > 1:
-            return 1
-        return multiplier - 0.02
-
-    adjustment = 0.3 * (1 - multiplier)
-    return multiplier + adjustment
-
-
-def compose(model, pieces, length, name):
-    # TODO Simplify the int8 conversion
-    input, output = map(lambda x: np.array(x, dtype='int8'), piece_handler.get_segment(pieces))
-
-    model.start_slow_walk(input[0])
-    art = [output[0]]
-    multiplier = INITIAL_MULTIPLIER
-
-    for time in range(length * piece_handler.SEGMENT_LENGTH):
-        results = model.slow_walk_fun(multiplier)
-        multiplier = get_updated_multiplier(multiplier, results)
-        art.append(results[-1])
-
-    art_path = ART_DIRECTORY + name + '.mid'
-    piece_handler.save_piece(art, art_path)
 
 
 def main():
@@ -106,9 +75,6 @@ def main():
 
     print 'Saving Deep Jammer...'
     save_weights(deep_jammer)
-
-    print 'Deep jamming...'
-    compose(deep_jammer, pieces, args.length, args.piece)
 
 
 if __name__ == '__main__':

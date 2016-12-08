@@ -1,16 +1,17 @@
-import theano, theano.tensor as T
+import theano
+import theano.tensor as T
 import numpy as np
 from pass_through_layer import PassThroughLayer
-from out_to_in_op import OutputFormToInputFormOp
-from theano_lstm import LSTM, StackedCells, Layer, create_optimization_updates, MultiDropout
-
-
-def has_hidden(layer):
-    return hasattr(layer, 'initial_hidden_state')
+from output_transformer import OutputTransformer
+from theano_lstm import StackedCells, LSTM, Layer, MultiDropout, create_optimization_updates
 
 
 def matrixify(vector, n):
     return T.repeat(T.shape_padleft(vector), n, axis=0)
+
+
+def has_hidden(layer):
+    return hasattr(layer, INITIAL_HIDDEN_STATE_KEY)
 
 
 def initial_state(layer, dimensions=None):
@@ -28,21 +29,14 @@ def initial_state_with_taps(layer, dimensions=None):
         return None
 
 
-def get_last_layer(result):
-    if isinstance(result, list):
-        return result[-1]
-    else:
-        return result
+def get_list(result):
+    return result if isinstance(result, list) else [result]
 
-
-def ensure_list(result):
-    if isinstance(result, list):
-        return result
-    else:
-        return [result]
 
 INPUT_SIZE = 80
 OUTPUT_SIZE = 2
+
+INITIAL_HIDDEN_STATE_KEY = 'initial_hidden_state'
 
 
 class Model(object):
@@ -58,12 +52,8 @@ class Model(object):
         self.note_model_layer_sizes = note_model_layer_sizes
         self.dropout_probability = dropout_probability
 
-        self.multiplier = T.fscalar()
-        self.random_number_generator = T.shared_randomstreams.RandomStreams(np.random.randint(0, 1024))
-
-        self._setup_train()
-        self._setup_predict()
-        self._setup_slow_walk()
+        self._initialize_update_function()
+        self._initialize_predict_function()
 
     @property
     def params(self):
@@ -76,25 +66,45 @@ class Model(object):
         self.note_model.params = param_list[time_model_size:]
 
     @property
-    def learned_config(self):
-        return [self.time_model.params, self.note_model.params,
-                [l.initial_hidden_state for mod in (self.time_model, self.note_model) for l in mod.layers if
-                 has_hidden(l)]]
+    def configuration(self):
+        models = [self.time_model, self.note_model]
 
-    @learned_config.setter
-    def learned_config(self, learned_list):
-        self.time_model.params = learned_list[0]
-        self.note_model.params = learned_list[1]
-        for l, val in zip((l for mod in (self.time_model, self.note_model) for l in mod.layers if has_hidden(l)), learned_list[2]):
-            l.initial_hidden_state.set_value(val.get_value())
+        initial_hidden_states = []
+        for model in models:
+            for layer in model.layers:
+                if hasattr(layer, INITIAL_HIDDEN_STATE_KEY):
+                    initial_hidden_states.append(layer.initial_hidden_state)
 
-    def get_time_model_input(self, adjusted_input):
+        return [self.time_model.params, self.note_model.params, initial_hidden_states]
+
+    @configuration.setter
+    def configuration(self, configuration):
+        self.time_model.params = configuration[0]
+        self.note_model.params = configuration[1]
+
+        hidden_state_layers = []
+        models = [self.time_model, self.note_model]
+
+        for model in models:
+            for layer in model.layers:
+                if hasattr(layer, INITIAL_HIDDEN_STATE_KEY):
+                    hidden_state_layers.append(layer)
+
+        initial_hidden_states = configuration[2]
+        for layer_id in xrange(len(hidden_state_layers)):
+            layer = hidden_state_layers[layer_id]
+            state = initial_hidden_states[layer_id]
+            layer.initial_hidden_state.set_value(state.get_value())
+
+    @staticmethod
+    def get_time_model_input(adjusted_input):
         batch_size, num_timesteps, num_notes, num_attributes = adjusted_input.shape
 
         tranposed_input = adjusted_input.transpose((1, 0, 2, 3))
         return tranposed_input.reshape((num_timesteps, batch_size * num_notes, num_attributes))
 
-    def get_note_model_input(self, adjusted_input, adjusted_output, time_model_output):
+    @staticmethod
+    def get_note_model_input(adjusted_input, adjusted_output, time_model_output):
         batch_size, num_timesteps, num_notes, _ = adjusted_input.shape
         num_hidden = time_model_output.shape[2]
 
@@ -102,32 +112,33 @@ class Model(object):
         transposed_time_model_output = reshaped_time_model_output.transpose((2, 1, 0, 3))
         adjusted_time_model_output = transposed_time_model_output.reshape((num_notes, batch_size * num_timesteps, num_hidden))
 
-        starting_notes = T.alloc(np.array(0, dtype=np.int8), 1, adjusted_time_model_output.shape[1], 2)
+        starting_notes = T.alloc(np.array(0, dtype=np.int8), 1, adjusted_time_model_output.shape[1], OUTPUT_SIZE)
+
         correct_choices = adjusted_output[:, :, :-1, :].transpose((2, 0, 1, 3))
-        reshaped_correct_choices = correct_choices.reshape((num_notes - 1, batch_size * num_timesteps, 2))
+        reshaped_correct_choices = correct_choices.reshape((num_notes - 1, batch_size * num_timesteps, OUTPUT_SIZE))
         adjusted_correct_choices = T.concatenate([starting_notes, reshaped_correct_choices], axis=0)
 
         return T.concatenate([adjusted_time_model_output, adjusted_correct_choices], axis=2)
 
-    def get_dropout_masks(self, adjusted_input, layer_sizes):
-        batch_size = adjusted_input.shape[1]
-        return MultiDropout([(batch_size, shape) for shape in layer_sizes], self.dropout_probability)
-
-    def get_outputs_info(self, adjusted_input, layers):
+    @staticmethod
+    def get_outputs_info(adjusted_input, layers):
         batch_size = adjusted_input.shape[1]
         return [initial_state_with_taps(layer, batch_size) for layer in layers]
 
-    def get_output(self, step, input, masks, outputs_info):
+    @staticmethod
+    def get_output(step, input, masks, outputs_info):
         result, _ = theano.scan(fn=step, sequences=[input], non_sequences=masks, outputs_info=outputs_info)
-        return get_last_layer(result)
+        return result[-1]
 
-    def get_prediction(self, adjusted_input, note_model_output):
+    @staticmethod
+    def get_prediction(adjusted_input, note_model_output):
         batch_size, num_timesteps, num_notes, _ = adjusted_input.shape
 
         reshaped_note_model_output = note_model_output.reshape((num_notes, batch_size, num_timesteps, OUTPUT_SIZE))
         return reshaped_note_model_output.transpose(1, 2, 0, 3)
 
-    def get_loss(self, adjusted_output, prediction):
+    @staticmethod
+    def get_loss(adjusted_output, prediction):
         epsilon = np.spacing(np.float32(1.0))
 
         active_notes = T.shape_padright(adjusted_output[:, :, :, 0])
@@ -138,163 +149,109 @@ class Model(object):
 
         return T.neg(T.sum(masked_log_likelihoods))
 
-    def _setup_train(self):
+    def get_dropout_masks(self, adjusted_input, layer_sizes):
+        batch_size = adjusted_input.shape[1]
+        return MultiDropout([(batch_size, shape) for shape in layer_sizes], self.dropout_probability)
+
+    def get_prediction_drop_masks(self, layers):
+        masks = [1 - self.dropout_probability for _ in layers]
+        masks[0] = None
+        return masks
+
+    def _initialize_update_function(self):
+        # TODO Rewrite this function
+        def time_step(input, *other):
+            other = list(other)
+
+            split = -len(self.time_model_layer_sizes)
+            previous_hidden_state = other[:split]
+            masks = [None] + other[split:]
+
+            return self.time_model.forward(input, prev_hiddens=previous_hidden_state, dropout=masks)
+
+        # TODO Rewrite this function
+        def note_step(input, *other):
+            other = list(other)
+
+            split = -len(self.note_model_layer_sizes)
+            previous_hidden_state = other[:split]
+            masks = [None] + other[split:]
+
+            return self.note_model.forward(input, prev_hiddens=previous_hidden_state, dropout=masks)
+
         input = T.btensor4()
         adjusted_input = input[:, :-1]
 
         output = T.btensor4()
         adjusted_output = output[:, 1:]
 
-        def step_time(in_data, *other):
-            other = list(other)
-
-            split = -len(self.time_model_layer_sizes)
-            hiddens = other[:split]
-            masks = [None] + other[split:]
-
-            return self.time_model.forward(in_data, prev_hiddens=hiddens, dropout=masks)
-
         time_model_input = self.get_time_model_input(adjusted_input)
         time_model_masks = self.get_dropout_masks(time_model_input, self.time_model_layer_sizes)
         time_model_outputs_info = self.get_outputs_info(time_model_input, self.time_model.layers)
-        time_model_output = self.get_output(step_time, time_model_input, time_model_masks, time_model_outputs_info)
-
-        def step_note(in_data, *other):
-            other = list(other)
-
-            split = -len(self.note_model_layer_sizes)
-            hiddens = other[:split]
-            masks = [None] + other[split:]
-
-            return self.note_model.forward(in_data, prev_hiddens=hiddens, dropout=masks)
+        time_model_output = self.get_output(time_step, time_model_input, time_model_masks, time_model_outputs_info)
 
         note_model_input = self.get_note_model_input(adjusted_input, adjusted_output, time_model_output)
         note_model_masks = self.get_dropout_masks(note_model_input, self.note_model_layer_sizes)
         note_outputs_info = self.get_outputs_info(note_model_input, self.note_model.layers)
-        note_model_output = self.get_output(step_note, note_model_input, note_model_masks, note_outputs_info)
+        note_model_output = self.get_output(note_step, note_model_input, note_model_masks, note_outputs_info)
 
         prediction = self.get_prediction(adjusted_input, note_model_output)
-
         loss = self.get_loss(adjusted_output, prediction)
 
         updates, _, _, _, _ = create_optimization_updates(loss, self.params)
-        self.update_fun = theano.function(inputs=[input, output], outputs=loss, updates=updates, allow_input_downcast=True)
 
-    def _predict_step_note(self, in_data_from_time, *states):
-        hiddens = list(states[:-1])
-        in_data_from_prev = states[-1]
-        in_data = T.concatenate([in_data_from_time, in_data_from_prev])
+        self.update = theano.function(inputs=[input, output], outputs=loss, updates=updates, allow_input_downcast=True)
 
-        masks = [1 - self.dropout_probability for _ in self.note_model.layers]
-        masks[0] = None
+    def _initialize_predict_function(self):
+        def predicted_note_step(time_model_output, *states):
+            previous_note_model_input = states[-1]
 
-        new_states = self.note_model.forward(in_data, prev_hiddens=hiddens, dropout=masks)
+            note_model_input = T.concatenate([time_model_output, previous_note_model_input])
 
-        probabilities = get_last_layer(new_states)
+            previous_hidden_state = list(states[:-1])
 
-        is_note_played = self.random_number_generator.uniform() < (probabilities[0] ** self.multiplier)
-        is_note_articulated = is_note_played * (self.random_number_generator.uniform() < probabilities[1])
+            masks = self.get_prediction_drop_masks(self.note_model.layers)
+            note_model_output = self.note_model.forward(note_model_input, prev_hiddens=previous_hidden_state, dropout=masks)
 
-        chosen = T.cast(T.stack(is_note_played, is_note_articulated), 'int8')
+            probabilities = note_model_output[-1]
 
-        return ensure_list(new_states) + [chosen]
+            generator = T.shared_randomstreams.RandomStreams(np.random.randint(0, 1024))
+            is_note_played = probabilities[0] > generator.uniform()
+            is_note_articulated = (probabilities[1] > generator.uniform()) * is_note_played
 
-    def _setup_predict(self):
-        self.predict_seed = T.bmatrix()
-        self.steps_to_simulate = T.iscalar()
+            prediction = T.cast(T.stack(is_note_played, is_note_articulated), 'int8')
 
-        def step_time(*states):
-            hiddens = list(states[:-2])
-            in_data = states[-2]
+            return get_list(note_model_output) + [prediction]
+
+        def time_step(*states):
+            time_model_input = states[-2]
+            previous_hidden_state = list(states[:-2])
+            masks = self.get_prediction_drop_masks(self.time_model.layers)
+            time_model_output = self.time_model.forward(time_model_input, prev_hiddens=previous_hidden_state, dropout=masks)
+
+            time_final = time_model_output[-1]
+
+            initial_note = theano.tensor.alloc(np.array(0, dtype=np.int8), OUTPUT_SIZE)
+
+            note_outputs_info = ([initial_state_with_taps(layer) for layer in self.note_model.layers] + [dict(initial=initial_note, taps=[-1])])
+
+            notes_result, updates = theano.scan(fn=predicted_note_step, sequences=[time_final], outputs_info=note_outputs_info)
+
+            output = notes_result[-1]
             time = states[-1]
+            next_input = OutputTransformer()(output, time + 1)
 
-            masks = [1 - self.dropout_probability for _ in self.time_model.layers]
-            masks[0] = None
+            return (get_list(time_model_output) + [next_input, time + 1, output]), updates
 
-            new_states = self.time_model.forward(in_data, prev_hiddens=hiddens, dropout=masks)
+        length = T.iscalar()
+        initial_note = T.bmatrix()
 
-            time_final = get_last_layer(new_states)
+        num_notes = initial_note.shape[0]
 
-            start_note_values = theano.tensor.alloc(np.array(0, dtype=np.int8), 2)
+        time_outputs_info = ([initial_state_with_taps(layer, num_notes) for layer in self.time_model.layers] + [dict(initial=initial_note, taps=[-1]), dict(initial=0, taps=[-1]), None])
 
-            note_outputs_info = ([initial_state_with_taps(layer) for layer in self.note_model.layers] +
-                                 [dict(initial=start_note_values, taps=[-1])])
+        time_result, updates = theano.scan(fn=time_step, outputs_info=time_outputs_info, n_steps=length)
 
-            notes_result, updates = theano.scan(fn=self._predict_step_note, sequences=[time_final],
-                                                outputs_info=note_outputs_info)
+        prediction = time_result[-1]
 
-            output = get_last_layer(notes_result)
-
-            next_input = OutputFormToInputFormOp()(output, time + 1)
-
-            return (ensure_list(new_states) + [next_input, time + 1, output]), updates
-
-        num_notes = self.predict_seed.shape[0]
-
-        time_outputs_info = ([initial_state_with_taps(layer, num_notes) for layer in self.time_model.layers] +
-                             [dict(initial=self.predict_seed, taps=[-1]),
-                              dict(initial=0, taps=[-1]),
-                              None])
-
-        time_result, updates = theano.scan(fn=step_time,
-                                           outputs_info=time_outputs_info,
-                                           n_steps=self.steps_to_simulate)
-
-
-        self.predicted_output = time_result[-1]
-
-        self.predict_fun = theano.function(
-            inputs=[self.steps_to_simulate, self.multiplier, self.predict_seed],
-            outputs=self.predicted_output,
-            updates=updates,
-            allow_input_downcast=True)
-
-    def _setup_slow_walk(self):
-        self.walk_input = theano.shared(np.ones((2, 2), dtype='int8'))
-        self.walk_time = theano.shared(np.array(0, dtype='int64'))
-        self.walk_hiddens = [theano.shared(np.ones((2, 2), dtype=theano.config.floatX)) for layer in
-                             self.time_model.layers if has_hidden(layer)]
-
-        masks = [1 - self.dropout_probability for layer in self.time_model.layers]
-        masks[0] = None
-
-        new_states = self.time_model.forward(self.walk_input, prev_hiddens=self.walk_hiddens, dropout=masks)
-
-        time_final = get_last_layer(new_states)
-
-        start_note_values = theano.tensor.alloc(np.array(0, dtype=np.int8), 2)
-        note_outputs_info = ([initial_state_with_taps(layer) for layer in self.note_model.layers] +
-                             [dict(initial=start_note_values, taps=[-1])])
-
-        notes_result, updates = theano.scan(fn=self._predict_step_note, sequences=[time_final],
-                                            outputs_info=note_outputs_info)
-
-        output = get_last_layer(notes_result)
-
-        next_input = OutputFormToInputFormOp()(output, self.walk_time + 1)
-
-        slow_walk_results = (new_states[:-1] + notes_result[:-1] + [next_input, output])
-
-        updates.update({
-            self.walk_time: self.walk_time + 1,
-            self.walk_input: next_input
-        })
-
-        updates.update(
-            {hidden: newstate for hidden, newstate, layer in zip(self.walk_hiddens, new_states, self.time_model.layers)
-             if has_hidden(layer)})
-
-        self.slow_walk_fun = theano.function(
-            inputs=[self.multiplier],
-            outputs=slow_walk_results,
-            updates=updates,
-            allow_input_downcast=True)
-
-    def start_slow_walk(self, seed):
-        seed = np.array(seed)
-        num_notes = seed.shape[0]
-
-        self.walk_time.set_value(0)
-        self.walk_input.set_value(seed)
-        for layer, hidden in zip((l for l in self.time_model.layers if has_hidden(l)), self.walk_hiddens):
-            hidden.set_value(np.repeat(np.reshape(layer.initial_hidden_state.get_value(), (1, -1)), num_notes, axis=0))
+        self.predict = theano.function([length, initial_note], outputs=prediction, updates=updates, allow_input_downcast=True)
