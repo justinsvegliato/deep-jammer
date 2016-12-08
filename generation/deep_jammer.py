@@ -89,12 +89,10 @@ def main():
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Compose a creative, ingenious, classical piece.')
-    parser.add_argument('piece', metavar='piece', help='the name of the new piece')
+    parser = argparse.ArgumentParser(description='Train a creative, ingenious, classical music generator.')
     parser.add_argument('repository', metavar='repository', help='the name of the repository')
     parser.add_argument('--epochs', default=DEFAULT_EPOCHS, type=int, metavar='epochs', help='the number of epochs')
     parser.add_argument('--batch_size', default=DEFAULT_BATCH_SIZE, type=int, metavar='batchSize', help='the size of each batch')
-    parser.add_argument('--length', default=DEFAULT_LENGTH, type=int, metavar='length', help='the length of the new piece')
 
     args = parser.parse_args()
 

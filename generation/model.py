@@ -201,6 +201,7 @@ class Model(object):
             is_note_played = probabilities[0] > generator.uniform()
             is_note_articulated = (probabilities[1] > generator.uniform()) * is_note_played
 
+            prediction = T.cast(T.stack(is_note_played, is_note_articulated), 'int8')
 
             return get_list(note_model_output) + [prediction]
 
