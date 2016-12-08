@@ -9,14 +9,14 @@ PIECE_DIRECTORY = 'pieces'
 
 def save_repository(pieces, name):
     filename = '%s/%s.json' % (REPOSITORY_DIRECTORY, name)
-    with open(filename, 'w') as file:
-        json.dump(pieces, file)
+    with open(filename, 'w') as f:
+        json.dump(pieces, f)
 
 
 def load_repository(name):
     filename = '%s/%s.json' % (REPOSITORY_DIRECTORY, name)
-    with open(filename, 'r') as file:
-        return json.load(file)
+    with open(filename, 'r') as f:
+        return json.load(f)
 
 
 def main():

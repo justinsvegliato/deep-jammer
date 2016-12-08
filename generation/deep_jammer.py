@@ -10,16 +10,16 @@ TIME_MODEL_LAYERS = [300, 300]
 NOTE_MODEL_LAYERS = [100, 50]
 DROPOUT_PROBABILITY = 0.5
 
-DEFAULT_EPOCHS = 10000
+DEFAULT_EPOCHS = 10 
 DEFAULT_BATCH_SIZE = 2
 DEFAULT_LENGTH = 5
 
-ART_DIRECTORY = 'art/'
 WEIGHTS_DIRECTORY = 'weights/'
 SAMPLE_DIRECTORY = 'samples/'
 
 WEIGHTS_FILE_NAME = 'weights-%s.p'
 SAMPLE_FILE_NAME = 'sample-%s.mid'
+LOSS_HISTORY_FILE_NAME = 'loss-history.txt'
 
 SUMMARY_THRESHOLD = 1
 CHECKPOINT_THRESHOLD = 1
@@ -50,9 +50,19 @@ def save_sample(model, epoch, pieces):
     piece_handler.save_piece(sample_art, sample_art_path)
 
 
+def save_loss_history(loss_history):
+    f = open(LOSS_HISTORY_FILE_NAME, 'w')
+    for new_loss in loss_history:
+        f.write('%s\n' % new_loss)
+
+
 def train(model, pieces, epochs, batch_size):
+    loss_history = []
+
     for epoch in xrange(epochs):
         loss = model.update(*piece_handler.get_piece_batch(pieces, batch_size))
+
+        loss_history.append(loss)
 
         if epoch % SUMMARY_THRESHOLD == 0:
             display_summary(epoch, batch_size, loss)
@@ -61,6 +71,7 @@ def train(model, pieces, epochs, batch_size):
             print 'Epoch %s: Saving checkpoint...' % epoch
             save_weights(model, epoch)
             save_sample(model, epoch, pieces)
+            save_loss_history(loss_history)
 
 
 def main():

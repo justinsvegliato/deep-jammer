@@ -6,29 +6,6 @@ from output_transformer import OutputTransformer
 from theano_lstm import StackedCells, LSTM, Layer, MultiDropout, create_optimization_updates
 
 
-def matrixify(vector, n):
-    return T.repeat(T.shape_padleft(vector), n, axis=0)
-
-
-def has_hidden(layer):
-    return hasattr(layer, INITIAL_HIDDEN_STATE_KEY)
-
-
-def initial_state(layer, dimensions=None):
-    if dimensions is None:
-        return layer.initial_hidden_state if has_hidden(layer) else None
-    else:
-        return matrixify(layer.initial_hidden_state, dimensions) if has_hidden(layer) else None
-
-
-def initial_state_with_taps(layer, dimensions=None):
-    state = initial_state(layer, dimensions)
-    if state is not None:
-        return dict(initial=state, taps=[-1])
-    else:
-        return None
-
-
 def get_list(result):
     return result if isinstance(result, list) else [result]
 
@@ -121,9 +98,12 @@ class Model(object):
         return T.concatenate([adjusted_time_model_output, adjusted_correct_choices], axis=2)
 
     @staticmethod
-    def get_outputs_info(adjusted_input, layers):
-        batch_size = adjusted_input.shape[1]
-        return [initial_state_with_taps(layer, batch_size) for layer in layers]
+    def get_initial_state(layer, dimensions=None):
+        if not hasattr(layer, INITIAL_HIDDEN_STATE_KEY):
+            return None
+
+        state = layer.initial_hidden_state if dimensions is None else T.repeat(T.shape_padleft(layer.initial_hidden_state), dimensions, axis=0)
+        return dict(initial=state, taps=[-1])
 
     @staticmethod
     def get_output(step, input, masks, outputs_info):
@@ -157,6 +137,10 @@ class Model(object):
         masks = [1 - self.dropout_probability for _ in layers]
         masks[0] = None
         return masks
+
+    def get_outputs_info(self, adjusted_input, layers):
+        batch_size = adjusted_input.shape[1]
+        return [self.get_initial_state(layer, batch_size) for layer in layers]
 
     def _initialize_update_function(self):
         # TODO Rewrite this function
@@ -207,35 +191,31 @@ class Model(object):
             previous_note_model_input = states[-1]
 
             note_model_input = T.concatenate([time_model_output, previous_note_model_input])
-
             previous_hidden_state = list(states[:-1])
-
             masks = self.get_prediction_drop_masks(self.note_model.layers)
             note_model_output = self.note_model.forward(note_model_input, prev_hiddens=previous_hidden_state, dropout=masks)
 
-            probabilities = note_model_output[-1]
-
             generator = T.shared_randomstreams.RandomStreams(np.random.randint(0, 1024))
+
+            probabilities = note_model_output[-1]
             is_note_played = probabilities[0] > generator.uniform()
             is_note_articulated = (probabilities[1] > generator.uniform()) * is_note_played
 
-            prediction = T.cast(T.stack(is_note_played, is_note_articulated), 'int8')
 
             return get_list(note_model_output) + [prediction]
 
-        def time_step(*states):
+        def predicted_time_step(*states):
             time_model_input = states[-2]
             previous_hidden_state = list(states[:-2])
             masks = self.get_prediction_drop_masks(self.time_model.layers)
             time_model_output = self.time_model.forward(time_model_input, prev_hiddens=previous_hidden_state, dropout=masks)
 
-            time_final = time_model_output[-1]
+            time_model_output_last_layer = time_model_output[-1]
 
-            initial_note = theano.tensor.alloc(np.array(0, dtype=np.int8), OUTPUT_SIZE)
+            initial_note = T.alloc(np.array(0, dtype=np.int8), OUTPUT_SIZE)
+            note_outputs_info = ([self.get_initial_state(layer) for layer in self.note_model.layers] + [dict(initial=initial_note, taps=[-1])])
 
-            note_outputs_info = ([initial_state_with_taps(layer) for layer in self.note_model.layers] + [dict(initial=initial_note, taps=[-1])])
-
-            notes_result, updates = theano.scan(fn=predicted_note_step, sequences=[time_final], outputs_info=note_outputs_info)
+            notes_result, updates = theano.scan(fn=predicted_note_step, sequences=[time_model_output_last_layer], outputs_info=note_outputs_info)
 
             output = notes_result[-1]
             time = states[-1]
@@ -248,9 +228,9 @@ class Model(object):
 
         num_notes = initial_note.shape[0]
 
-        time_outputs_info = ([initial_state_with_taps(layer, num_notes) for layer in self.time_model.layers] + [dict(initial=initial_note, taps=[-1]), dict(initial=0, taps=[-1]), None])
+        time_outputs_info = ([self.get_initial_state(layer, num_notes) for layer in self.time_model.layers] + [dict(initial=initial_note, taps=[-1]), dict(initial=0, taps=[-1]), None])
 
-        time_result, updates = theano.scan(fn=time_step, outputs_info=time_outputs_info, n_steps=length)
+        time_result, updates = theano.scan(fn=predicted_time_step, outputs_info=time_outputs_info, n_steps=length)
 
         prediction = time_result[-1]
 
