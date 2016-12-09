@@ -1,7 +1,7 @@
 from theano_lstm import Layer
 
 
-class PassThroughLayer(Layer):
+class Router(Layer):
     def __init__(self):
         self.is_recursive = False
 

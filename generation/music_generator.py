@@ -1,14 +1,9 @@
 import theano
 import theano.tensor as T
 import numpy as np
-from pass_through_layer import PassThroughLayer
-from output_transformer import OutputTransformer
 from theano_lstm import StackedCells, LSTM, Layer, MultiDropout, create_optimization_updates
-
-
-def get_list(result):
-    return result if isinstance(result, list) else [result]
-
+from router import Router
+from output_transformer import OutputTransformer
 
 INPUT_SIZE = 80
 OUTPUT_SIZE = 2
@@ -16,10 +11,10 @@ OUTPUT_SIZE = 2
 INITIAL_HIDDEN_STATE_KEY = 'initial_hidden_state'
 
 
-class Model(object):
+class MusicGenerator(object):
     def __init__(self, time_model_layer_sizes, note_model_layer_sizes, dropout_probability):
         self.time_model = StackedCells(INPUT_SIZE, celltype=LSTM, layers=time_model_layer_sizes)
-        self.time_model.layers.append(PassThroughLayer())
+        self.time_model.layers.append(Router())
 
         note_model_input_size = time_model_layer_sizes[-1] + OUTPUT_SIZE
         self.note_model = StackedCells(note_model_input_size, celltype=LSTM, layers=note_model_layer_sizes)
@@ -203,7 +198,7 @@ class Model(object):
 
             prediction = T.cast(T.stack(is_note_played, is_note_articulated), 'int8')
 
-            return get_list(note_model_output) + [prediction]
+            return note_model_output + [prediction]
 
         def predicted_time_step(*states):
             time_model_input = states[-2]
@@ -216,13 +211,13 @@ class Model(object):
             initial_note = T.alloc(np.array(0, dtype=np.int8), OUTPUT_SIZE)
             note_outputs_info = ([self.get_initial_state(layer) for layer in self.note_model.layers] + [dict(initial=initial_note, taps=[-1])])
 
-            notes_result, updates = theano.scan(fn=predicted_note_step, sequences=[time_model_output_last_layer], outputs_info=note_outputs_info)
+            notes_model_output, updates = theano.scan(fn=predicted_note_step, sequences=[time_model_output_last_layer], outputs_info=note_outputs_info)
 
-            output = notes_result[-1]
+            output = notes_model_output[-1]
             time = states[-1]
             next_input = OutputTransformer()(output, time + 1)
 
-            return (get_list(time_model_output) + [next_input, time + 1, output]), updates
+            return ([time_model_output] + [next_input, time + 1, output]), updates
 
         length = T.iscalar()
         initial_note = T.bmatrix()
@@ -230,9 +225,8 @@ class Model(object):
         num_notes = initial_note.shape[0]
 
         time_outputs_info = ([self.get_initial_state(layer, num_notes) for layer in self.time_model.layers] + [dict(initial=initial_note, taps=[-1]), dict(initial=0, taps=[-1]), None])
+        time_model_output, updates = theano.scan(fn=predicted_time_step, outputs_info=time_outputs_info, n_steps=length)
 
-        time_result, updates = theano.scan(fn=predicted_time_step, outputs_info=time_outputs_info, n_steps=length)
-
-        prediction = time_result[-1]
+        prediction = time_model_output[-1]
 
         self.predict = theano.function([length, initial_note], outputs=prediction, updates=updates, allow_input_downcast=True)
