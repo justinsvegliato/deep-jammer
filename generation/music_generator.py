@@ -101,8 +101,8 @@ class MusicGenerator(object):
         return dict(initial=state, taps=[-1])
 
     @staticmethod
-    def get_output(step, input, masks, outputs_info):
-        result, _ = theano.scan(fn=step, sequences=[input], non_sequences=masks, outputs_info=outputs_info)
+    def get_output(step, input, outputs_info):
+        result, _ = theano.scan(fn=step, sequences=[input], outputs_info=outputs_info)
         return result[-1]
 
     @staticmethod
@@ -124,39 +124,16 @@ class MusicGenerator(object):
 
         return T.neg(T.sum(masked_log_likelihoods))
 
-    def get_dropout_masks(self, adjusted_input, layer_sizes):
-        batch_size = adjusted_input.shape[1]
-        return MultiDropout([(batch_size, shape) for shape in layer_sizes], self.dropout_probability)
-
-    def get_prediction_drop_masks(self, layers):
-        masks = [1 - self.dropout_probability for _ in layers]
-        masks[0] = None
-        return masks
-
     def get_outputs_info(self, adjusted_input, layers):
         batch_size = adjusted_input.shape[1]
         return [self.get_initial_state(layer, batch_size) for layer in layers]
 
     def _initialize_update_function(self):
-        # TODO Rewrite this function
-        def time_step(input, *other):
-            other = list(other)
+        def time_step(input, *previous_hidden_state):
+            return self.time_model.forward(input, prev_hiddens=previous_hidden_state)
 
-            split = -len(self.time_model_layer_sizes)
-            previous_hidden_state = other[:split]
-            masks = [None] + other[split:]
-
-            return self.time_model.forward(input, prev_hiddens=previous_hidden_state, dropout=masks)
-
-        # TODO Rewrite this function
-        def note_step(input, *other):
-            other = list(other)
-
-            split = -len(self.note_model_layer_sizes)
-            previous_hidden_state = other[:split]
-            masks = [None] + other[split:]
-
-            return self.note_model.forward(input, prev_hiddens=previous_hidden_state, dropout=masks)
+        def note_step(input, *previous_hidden_state):
+            return self.note_model.forward(input, prev_hiddens=previous_hidden_state)
 
         input = T.btensor4()
         adjusted_input = input[:, :-1]
@@ -165,14 +142,12 @@ class MusicGenerator(object):
         adjusted_output = output[:, 1:]
 
         time_model_input = self.get_time_model_input(adjusted_input)
-        time_model_masks = self.get_dropout_masks(time_model_input, self.time_model_layer_sizes)
         time_model_outputs_info = self.get_outputs_info(time_model_input, self.time_model.layers)
-        time_model_output = self.get_output(time_step, time_model_input, time_model_masks, time_model_outputs_info)
+        time_model_output = self.get_output(time_step, time_model_input, time_model_outputs_info)
 
         note_model_input = self.get_note_model_input(adjusted_input, adjusted_output, time_model_output)
-        note_model_masks = self.get_dropout_masks(note_model_input, self.note_model_layer_sizes)
         note_outputs_info = self.get_outputs_info(note_model_input, self.note_model.layers)
-        note_model_output = self.get_output(note_step, note_model_input, note_model_masks, note_outputs_info)
+        note_model_output = self.get_output(note_step, note_model_input, note_outputs_info)
 
         prediction = self.get_prediction(adjusted_input, note_model_output)
         loss = self.get_loss(adjusted_output, prediction)
@@ -187,8 +162,7 @@ class MusicGenerator(object):
 
             note_model_input = T.concatenate([time_model_output, previous_note_model_input])
             previous_hidden_state = list(states[:-1])
-            masks = self.get_prediction_drop_masks(self.note_model.layers)
-            note_model_output = self.note_model.forward(note_model_input, prev_hiddens=previous_hidden_state, dropout=masks)
+            note_model_output = self.note_model.forward(note_model_input, prev_hiddens=previous_hidden_state)
 
             generator = T.shared_randomstreams.RandomStreams(np.random.randint(0, 1024))
 
@@ -203,8 +177,7 @@ class MusicGenerator(object):
         def predicted_time_step(*states):
             time_model_input = states[-2]
             previous_hidden_state = list(states[:-2])
-            masks = self.get_prediction_drop_masks(self.time_model.layers)
-            time_model_output = self.time_model.forward(time_model_input, prev_hiddens=previous_hidden_state, dropout=masks)
+            time_model_output = self.time_model.forward(time_model_input, prev_hiddens=previous_hidden_state)
 
             time_model_output_last_layer = time_model_output[-1]
 
@@ -217,7 +190,7 @@ class MusicGenerator(object):
             time = states[-1]
             next_input = OutputTransformer()(output, time + 1)
 
-            return ([time_model_output] + [next_input, time + 1, output]), updates
+            return (time_model_output + [next_input, time + 1, output]), updates
 
         length = T.iscalar()
         initial_note = T.bmatrix()
