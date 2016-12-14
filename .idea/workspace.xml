@@ -2,9 +2,330 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="567a9a57-3518-4a34-a1ac-34f63a8d1df7" name="Default" comment="Implemented checkpoints to avoid losing weights">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation.old/__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/BR_IM6.MID" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/DEB_CLAI.MID" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/DEB_PASS.MID" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/appass_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/appass_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/appass_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/bach_846.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/bach_847.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/bach_850.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_hammerklavier_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_hammerklavier_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_hammerklavier_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_hammerklavier_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_les_adieux_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_les_adieux_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_les_adieux_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_opus10_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_opus10_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_opus10_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_opus22_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_opus22_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_opus22_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_opus22_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_opus90_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/beethoven_opus90_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/bor_ps1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/bor_ps2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/bor_ps3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/bor_ps4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/bor_ps5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/bor_ps6.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/bor_ps7.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/br_im2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/br_im5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/br_rhap.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/brahms_opus117_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/brahms_opus117_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/brahms_opus1_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/brahms_opus1_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/brahms_opus1_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/brahms_opus1_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/burg_agitato.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/burg_erwachen.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/burg_geschwindigkeit.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/burg_gewitter.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/burg_perlen.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/burg_quelle.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/burg_spinnerlied.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/burg_sylphen.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/burg_trennung.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chp_op18.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chp_op31.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p10.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p11.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p12.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p13.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p14.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p15.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p16.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p17.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p18.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p19.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p20.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p21.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p22.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p23.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p24.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p6.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p7.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p8.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn-p9.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op10_e01.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op10_e05.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op10_e12.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op23.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op25_e1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op25_e11.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op25_e12.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op25_e2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op25_e3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op25_e4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op27_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op27_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op33_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op33_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op35_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op35_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op35_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op35_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op53.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op66.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op7_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/chpn_op7_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_1_1_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_1_2_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_1_3_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_2_1_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_2_2_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_2_3_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_3_1_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_3_2_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_3_3_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_4_1_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_4_2_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_4_3_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_5_1_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_5_2_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_5_3_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_6_1_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/clementi_opus36_6_2_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/deb_menu.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/deb_prel.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/debussy_cc_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/debussy_cc_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/debussy_cc_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/debussy_cc_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/debussy_cc_6.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/elise.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/example_song.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/fruehlingsrauschen_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/god_alb_esp2_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/god_chpn_op10_e01_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/gra_esp_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/gra_esp_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/gra_esp_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_album.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_berceuse.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_brooklet.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_butterfly.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_elfentanz.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_halling.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_kobold.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_march.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_once_upon_a_time.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_spring.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_voeglein.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_waechter.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_walzer.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_wanderer.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_wedding.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/grieg_zwerge.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/hay_40_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/hay_40_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_33_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_33_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_33_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_35_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_35_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_35_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_43_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_43_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_43_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_7_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_7_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_7_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_8_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_8_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_8_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_8_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_9_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_9_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/haydn_9_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/islamei.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_donjuan.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_et1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_et2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_et3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_et4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_et5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_et6.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_et_trans4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_et_trans5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_et_trans8.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_liebestraum.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_rhap02.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_rhap09.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_rhap10.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_rhap12.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/liz_rhap15.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op19_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op19_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op19_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op19_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op19_5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op19_6.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op30_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op30_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op30_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op30_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op30_5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op53_5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op62_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op62_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mendel_op62_5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mond_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mond_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mond_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mos_op36_6_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/muss_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/muss_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/muss_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/muss_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/muss_5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/muss_6.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/muss_7.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/muss_8.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_311_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_311_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_311_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_330_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_330_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_330_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_331_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_331_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_331_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_332_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_332_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_332_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_333_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_333_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_333_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_545_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_545_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_545_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_570_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_570_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/mz_570_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/pathetique_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/pathetique_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/pathetique_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/rac_op23_2_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/rac_op23_3_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/rac_op23_5_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/rac_op23_7_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/rac_op32_13_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/rac_op32_1_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/rac_op33_5_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/rac_op33_6_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/rac_op33_8_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/rac_op3_2_format0.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schu_143_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schu_143_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schu_143_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schub_d760_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schub_d760_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schub_d760_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schub_d760_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schub_d960_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schub_d960_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schub_d960_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schub_d960_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schubert_D850_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schubert_D850_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schubert_D850_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schubert_D850_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schubert_D935_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schubert_D935_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schubert_D935_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schubert_D935_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schuim-1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schuim-2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schuim-3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schuim-4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schum_abegg.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schumm-1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schumm-2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schumm-3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schumm-4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schumm-5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/schumm-6.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_10.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_11.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_12.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_13.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_6.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_7.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_8.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn15_9.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn16_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn16_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn16_3.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn16_4.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn16_5.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn16_6.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn16_7.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn16_8.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn68_10.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/scn68_12.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_april.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_august.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_dezember.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_februar.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_januar.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_juli.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_juni.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_maerz.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_mai.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_november.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_oktober.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/ty_september.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/waldstein_1.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/waldstein_2.mid" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/generation/pieces/waldstein_3.mid" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/deep-jammer.iml" afterPath="$PROJECT_DIR$/.idea/deep-jammer.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/generation/checkpoint_analyzer.py" afterPath="$PROJECT_DIR$/generation/checkpoint_analyzer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/generation.old/checkpoint_analyzer.py" afterPath="$PROJECT_DIR$/generation.old/checkpoint_analyzer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/generation.old/deep_jammer.py" afterPath="$PROJECT_DIR$/generation.old/deep_jammer.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/generation/deep_jammer.py" afterPath="$PROJECT_DIR$/generation/deep_jammer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/generation/markov_chain.py" afterPath="$PROJECT_DIR$/generation/markov_chain.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/generation/music_generator.py" afterPath="$PROJECT_DIR$/generation/music_generator.py" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,6 +334,9 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/deep-jammer$model.coverage" NAME="model Coverage Results" MODIFIED="1481160661763" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/generation" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -23,25 +347,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="deep_jammer.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/generation/deep_jammer.py">
+      <file leaf-file-name="music_generator.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/generation/music_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-480">
-              <caret line="28" column="36" lean-forward="false" selection-start-line="28" selection-start-column="36" selection-end-line="28" selection-end-column="36" />
+            <state relative-caret-position="-1095">
+              <caret line="64" column="57" lean-forward="true" selection-start-line="64" selection-start-column="57" selection-end-line="64" selection-end-column="57" />
               <folding>
-                <element signature="e#22#37#0" expanded="true" />
+                <element signature="e#0#13#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="checkpoint_analyzer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/generation/checkpoint_analyzer.py">
+      <file leaf-file-name="deep_jammer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/generation/deep_jammer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-450">
-              <caret line="20" column="16" lean-forward="false" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="16" />
+            <state relative-caret-position="-184">
+              <caret line="50" column="36" lean-forward="false" selection-start-line="50" selection-start-column="36" selection-end-line="50" selection-end-column="36" />
               <folding>
-                <element signature="e#22#40#0" expanded="true" />
+                <element signature="e#22#37#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -56,6 +380,46 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>self.params</find>
+      <find>layer</find>
+      <find>pitch</find>
+      <find>self.outpu</find>
+      <find>_predict_step_note</find>
+      <find>learned_config</find>
+      <find>has_hidden</find>
+      <find>multiplier</find>
+      <find>MULTIPLIER</find>
+      <find>Multiplier</find>
+      <find>loss</find>
+      <find>update_fun</find>
+      <find>get_multiple_input_forms</find>
+      <find>prediction</find>
+      <find>random_number_generator</find>
+      <find>get_last_element</find>
+      <find>&quot;</find>
+      <find>initial_state</find>
+      <find>matrixify</find>
+      <find>initial_state_with_taps</find>
+      <find>theano.tensor</find>
+      <find>alloc</find>
+      <find>True</find>
+      <find>get_list</find>
+      <find>model</find>
+      <find>MIDI_FILE_EXTENSION</find>
+      <find>dropout</find>
+      <find>get_output</find>
+      <find>utputs</find>
+      <find>mask</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>self.dropout_probability</replace>
+      <replace>self.time_model_layers</replace>
+      <replace>self.note_model_layers</replace>
+      <replace>'</replace>
+    </replaceStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -68,8 +432,19 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/generation/playground.py" />
-        <option value="$PROJECT_DIR$/generation/deep_jammer.py" />
         <option value="$PROJECT_DIR$/generation/checkpoint_analyzer.py" />
+        <option value="$PROJECT_DIR$/generation/out_to_in_op.py" />
+        <option value="$PROJECT_DIR$/generation/pass_through_layer.py" />
+        <option value="$PROJECT_DIR$/generation/model.py" />
+        <option value="$PROJECT_DIR$/generation/music_generation_model.py" />
+        <option value="$PROJECT_DIR$/generation/output_transformer.py" />
+        <option value="$PROJECT_DIR$/generation/router.py" />
+        <option value="$PROJECT_DIR$/generation/repository_handler.py" />
+        <option value="$PROJECT_DIR$/generation.old/checkpoint_analyzer.py" />
+        <option value="$PROJECT_DIR$/generation.old/deep_jammer.py" />
+        <option value="$PROJECT_DIR$/generation/markov_chain.py" />
+        <option value="$PROJECT_DIR$/generation/deep_jammer.py" />
+        <option value="$PROJECT_DIR$/generation/music_generator.py" />
       </list>
     </option>
   </component>
@@ -102,9 +477,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -131,26 +504,10 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="deep-jammer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="deep-jammer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="generation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="art" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -166,149 +523,23 @@
       <recent name="$PROJECT_DIR$/generation/checkpoints" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
-      <module name="" />
-      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
-      <option name="PROGRAM_PARAMETERS" />
-      <predefined_log_file id="idea.log" enabled="true" />
-      <method />
-    </configuration>
-    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android App">
-      <module name="" />
-      <option name="DEPLOY" value="true" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="PM_INSTALL_OPTIONS" value="" />
-      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
-      <option name="MODE" value="default_activity" />
-      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
-      <option name="DEBUGGER_TYPE" value="Java" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <Java />
-      <Profilers>
-        <option name="ENABLE_ADVANCED_PROFILING" value="true" />
-        <option name="GAPID_ENABLED" value="false" />
-        <option name="GAPID_DISABLE_PCS" value="false" />
-        <option name="SUPPORT_LIB_ENABLED" value="true" />
-        <option name="INSTRUMENTATION_ENABLED" value="true" />
-      </Profilers>
-      <option name="DEEP_LINK" value="" />
-      <option name="ACTIVITY_CLASS" value="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
-      <module name="" />
-      <option name="TESTING_TYPE" value="0" />
-      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="EXTRA_OPTIONS" value="" />
-      <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
-      <option name="DEBUGGER_TYPE" value="Java" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <Java />
-      <Profilers>
-        <option name="ENABLE_ADVANCED_PROFILING" value="true" />
-        <option name="GAPID_ENABLED" value="false" />
-        <option name="GAPID_DISABLE_PCS" value="false" />
-        <option name="SUPPORT_LIB_ENABLED" value="true" />
-        <option name="INSTRUMENTATION_ENABLED" value="true" />
-      </Profilers>
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <module />
-      <method />
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="" />
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
-    <configuration default="true" type="ArquillianTestNG" factoryName="">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="" />
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="SUITE_NAME" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="GROUP_NAME" />
-      <option name="TEST_OBJECT" value="CLASS" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" />
-      <option name="OUTPUT_DIRECTORY" />
-      <option name="ANNOTATION_TYPE" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <option name="USE_DEFAULT_REPORTERS" value="false" />
-      <option name="PROPERTIES_FILE" />
-      <envs />
-      <properties />
-      <listeners />
+  <component name="RunManager" selected="Python.model">
+    <configuration default="false" name="model" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/generation" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="deep-jammer" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/generation/music_generator.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="BashConfigurationType" factoryName="Bash">
@@ -318,28 +549,6 @@
       <option name="PARENT_ENVS" value="true" />
       <option name="SCRIPT_NAME" value="" />
       <option name="PARAMETERS" value="" />
-      <module name="" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="Cold Fusion runner description" factoryName="Cold Fusion" custom_browser="" web_path="">
-      <method />
-    </configuration>
-    <configuration default="true" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="myFilePath" />
-      <option name="GLUE" />
-      <option name="myNameFilter" />
-      <option name="myGeneratedName" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
       <module name="" />
       <envs />
       <method />
@@ -364,121 +573,6 @@
       <option name="OPTIONS" value="" />
       <method />
     </configuration>
-    <configuration default="true" type="FlashRunConfigurationType" factoryName="Flash App">
-      <option name="BCName" value="" />
-      <option name="IOSSimulatorSdkPath" value="" />
-      <option name="adlOptions" value="" />
-      <option name="airProgramParameters" value="" />
-      <option name="appDescriptorForEmulator" value="Android" />
-      <option name="debugTransport" value="USB" />
-      <option name="debuggerSdkRaw" value="BC SDK" />
-      <option name="emulator" value="NexusOne" />
-      <option name="emulatorAdlOptions" value="" />
-      <option name="fastPackaging" value="true" />
-      <option name="fullScreenHeight" value="0" />
-      <option name="fullScreenWidth" value="0" />
-      <option name="launchUrl" value="false" />
-      <option name="launcherParameters">
-        <LauncherParameters>
-          <option name="browser" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
-          <option name="launcherType" value="OSDefault" />
-          <option name="newPlayerInstance" value="false" />
-          <option name="playerPath" value="/Applications/Flash Player Debugger.app" />
-        </LauncherParameters>
-      </option>
-      <option name="mobileRunTarget" value="Emulator" />
-      <option name="moduleName" value="" />
-      <option name="overriddenMainClass" value="" />
-      <option name="overriddenOutputFileName" value="" />
-      <option name="overrideMainClass" value="false" />
-      <option name="runTrusted" value="true" />
-      <option name="screenDpi" value="0" />
-      <option name="screenHeight" value="0" />
-      <option name="screenWidth" value="0" />
-      <option name="url" value="http://" />
-      <option name="usbDebugPort" value="7936" />
-      <method />
-    </configuration>
-    <configuration default="true" type="FlexUnitRunConfigurationType" factoryName="FlexUnit" appDescriptorForEmulator="Android" class_name="" emulatorAdlOptions="" method_name="" package_name="" scope="Class">
-      <option name="BCName" value="" />
-      <option name="launcherParameters">
-        <LauncherParameters>
-          <option name="browser" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
-          <option name="launcherType" value="OSDefault" />
-          <option name="newPlayerInstance" value="false" />
-          <option name="playerPath" value="/Applications/Flash Player Debugger.app" />
-        </LauncherParameters>
-      </option>
-      <option name="moduleName" value="" />
-      <option name="trusted" value="true" />
-      <method />
-    </configuration>
-    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list />
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <method />
-    </configuration>
-    <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails">
-      <setting name="vmparams" value="" />
-      <setting name="cmdLine" value="run-app" />
-      <setting name="passParentEnv" value="true" />
-      <setting name="launchBrowser" value="true" />
-      <setting name="launchBrowserUrl" value="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
-    <configuration default="true" type="JarApplication" factoryName="JAR Application">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="Java Scratch" factoryName="Java Scratch">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="SCRATCH_FILE_ID" value="0" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="" />
-      <envs />
-      <method />
-    </configuration>
     <configuration default="true" type="JavaScriptTestRunnerProtractor" factoryName="Protractor">
       <config-file value="" />
       <node-interpreter value="project" />
@@ -486,31 +580,6 @@
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
-      <method />
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="deep-jammer" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType" factoryName="Kotlin script">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="filePath" />
-      <option name="vmParameters" />
-      <option name="alternativeJrePath" />
-      <option name="programParameters" />
-      <option name="passParentEnvs" value="true" />
-      <option name="workingDirectory" />
-      <option name="isAlternativeJrePathEnabled" value="false" />
-      <envs />
       <method />
     </configuration>
     <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
@@ -559,48 +628,6 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="TestNG" factoryName="TestNG">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="SUITE_NAME" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="GROUP_NAME" />
-      <option name="TEST_OBJECT" value="CLASS" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="OUTPUT_DIRECTORY" />
-      <option name="ANNOTATION_TYPE" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <option name="USE_DEFAULT_REPORTERS" value="false" />
-      <option name="PROPERTIES_FILE" />
-      <envs />
-      <properties />
-      <listeners />
-      <method />
-    </configuration>
     <configuration default="true" type="Tox" factoryName="Tox">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -614,33 +641,20 @@
       <module name="deep-jammer" />
       <method />
     </configuration>
-    <configuration default="true" type="executeSpecs" factoryName="Gauge Execution">
-      <setting name="environment" value="" />
-      <setting name="specsToExecute" value="" />
-      <setting name="tags" value="" />
-      <setting name="parallelNodes" value="" />
-      <setting name="execInParallel" value="false" />
-      <setting name="programParameters" value="" />
-      <setting name="workingDirectory" value="" />
-      <setting name="moduleName" value="" />
-      <envMap />
-      <setting name="rowsRange" value="" />
-      <method />
-    </configuration>
     <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
-      <method />
-    </configuration>
-    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
-      <command value="run-script" />
-      <scripts />
-      <node-interpreter value="project" />
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
       <envs />
       <method />
     </configuration>
-    <configuration default="true" type="osgi.bnd.run" factoryName="Run Launcher">
-      <method />
-    </configuration>
-    <configuration default="true" type="osgi.bnd.run" factoryName="Test Launcher (JUnit)">
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run" />
+      <scripts />
+      <node-interpreter value="project" />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="Attests">
@@ -753,6 +767,14 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="Python.model" />
+    </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Python.model" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
@@ -788,7 +810,63 @@
       <option name="project" value="LOCAL" />
       <updated>1480626535878</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Rewrote a huge portion of the code">
+      <created>1481134168143</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1481134168143</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Implemented more theano components">
+      <created>1481159016578</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1481159016578</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Refactored some more code">
+      <created>1481169252648</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1481169252648</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Cleaned up some more code - work in progress">
+      <created>1481203587446</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1481203587446</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Cleaned up more code">
+      <created>1481245927412</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1481245927412</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Renamed some directories to be more logical">
+      <created>1481245997023</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1481245997023</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Renamed file">
+      <created>1481246098585</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1481246098585</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Implemented checkpoints to avoid losing weights">
+      <created>1481356472155</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1481356472155</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -796,40 +874,77 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="873" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16736111" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298611" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290653" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297568" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39925373" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3290653" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329602" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2532189" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290653" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+    </layout>
+    <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290653" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297568" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39925373" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-    </layout>
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329602" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16736111" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3283582" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298611" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="processedProjectFiles" value="true" />
@@ -838,24 +953,35 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implemented checkpoints to avoid losing weights" />
     <MESSAGE value="Added two directories (with bogus content so they don't disppear)" />
     <MESSAGE value="Changed optimization parameters back to the defaults - observed that the other ones didn't work that well" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed optimization parameters back to the defaults - observed that the other ones didn't work that well" />
+    <MESSAGE value="Rewrote a huge portion of the code" />
+    <MESSAGE value="Implemented more theano components" />
+    <MESSAGE value="Refactored some more code" />
+    <MESSAGE value="Cleaned up some more code - work in progress" />
+    <MESSAGE value="Cleaned up more code" />
+    <MESSAGE value="Renamed some directories to be more logical" />
+    <MESSAGE value="Renamed file" />
+    <MESSAGE value="Implemented checkpoints to avoid losing weights" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented checkpoints to avoid losing weights" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/generation/deep_jammer.py</url>
-          <line>1</line>
-        </line-breakpoint>
-      </breakpoints>
       <option name="time" value="1" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/generation/music_generator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/generation/deep_jammer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -863,43 +989,144 @@
           <folding>
             <element signature="e#22#37#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation/deep_jammer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#22#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation/deep_jammer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#22#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation/checkpoint_analyzer.py" />
+    <entry file="file://$PROJECT_DIR$/generation/loss-history.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation/output_transformer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#13#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation/router.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="9" lean-forward="false" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/generation/piece_handler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2069">
+        <state relative-caret-position="120">
+          <caret line="12" column="19" lean-forward="false" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python2.7/site-packages/theano_lstm/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="258">
+          <caret line="524" column="8" lean-forward="false" selection-start-line="524" selection-start-column="8" selection-end-line="524" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation/configurations/.keep">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#18#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/generation/repository_handler.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation.old/data_parser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="446">
+          <caret line="32" column="8" lean-forward="true" selection-start-line="32" selection-start-column="8" selection-end-line="32" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation.old/deep_jammer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-90">
+          <caret line="106" column="0" lean-forward="true" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation.old/repository_handler.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation.old/checkpoint_analyzer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation/markov_chain.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="21" column="42" lean-forward="false" selection-start-line="21" selection-start-column="42" selection-end-line="21" selection-end-column="42" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/generation/checkpoint_analyzer.py">
+    <entry file="file://$PROJECT_DIR$/generation/data_parser.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-450">
-          <caret line="20" column="16" lean-forward="false" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="16" />
-          <folding>
-            <element signature="e#22#40#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="90">
+          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/generation/deep_jammer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-480">
-          <caret line="28" column="36" lean-forward="false" selection-start-line="28" selection-start-column="36" selection-end-line="28" selection-end-column="36" />
+        <state relative-caret-position="-184">
+          <caret line="50" column="36" lean-forward="false" selection-start-line="50" selection-start-column="36" selection-end-line="50" selection-end-column="36" />
           <folding>
             <element signature="e#22#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generation/music_generator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1095">
+          <caret line="64" column="57" lean-forward="true" selection-start-line="64" selection-start-column="57" selection-end-line="64" selection-end-column="57" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
