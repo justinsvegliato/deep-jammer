@@ -24,28 +24,13 @@ DROPOUT_PROBABILITY = 0.5
 def compose_piece(model, start_note):
     inputs = [start_note]
     outputs = []
- 
-    cons = 1
 
     for i in xrange(PIECE_LENGTH):
         X_in = inputs[i]
         y_pred = model.predict(X_in, batch_size=1).reshape((78, 2))
 
-        # Set the probabilities of the input to 0s and 1s through sampling
         random_mask = np.random.uniform(size=y_pred.shape)
-        y_pred[:, 0] = (y_pred[:, 0] ** cons) > random_mask[:, 0]
-
-        nnotes = np.sum(y_pred[:, 0])
-
-        if nnotes < 2:
-            if cons > 1:
-                cons = 1
-
-            cons -= 0.02
-        else:
-            cons += (1 - cons) * 0.3
-
-        # Set articulate probabilities to 0 if the note is not played
+        y_pred[:, 0] = y_pred[:, 0] > random_mask[:, 0]
         y_pred[:, 1] = y_pred[:, 0] * (y_pred[:, 1] > random_mask[:, 1])
 
         input = np.array(data_parser.get_single_input_form(y_pred, i)).reshape((1, 78, 80))

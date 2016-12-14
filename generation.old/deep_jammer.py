@@ -105,14 +105,6 @@ def compose_piece(model, start_note):
     return np.asarray(outputs)
 
 
-# def objective(y_true, y_pred):
-#     played_likelihoods = T.sum(T.log(2 * y_pred[:, :, :, 0] * y_true[:, :, :, 0] - y_pred[:, :, :, 0] - y_true[:, :, :, 0] + 1 + EPSILON))
-#
-#     mask = y_true[:, :, :, 0]
-#     articulated_likelihoods = T.sum(mask * (T.log(2 * y_pred[:, :, :, 1] * y_true[:, :, :, 1] - y_pred[:, :, :, 1] - y_true[:, :, :, 1] + 1 + EPSILON)))
-#
-#     return T.neg(played_likelihoods + articulated_likelihoods)
-
 def objective(y_true, y_pred):
     active_notes = T.shape_padright(y_true[:, :, :, 0])
     mask = T.concatenate([T.ones_like(active_notes), active_notes], axis=3)
