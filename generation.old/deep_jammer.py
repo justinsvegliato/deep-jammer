@@ -46,15 +46,6 @@ def train(model, pieces):
 
         X, y = piece_handler.get_piece_batch(pieces, BATCH_SIZE)
 
-        # npad = ((0,0), (0,0), (1,0), (0,1))
-        # y_dummy = np.pad(y[:, :, :-1, :], pad_width=npad, mode='constant', constant_values=0)
-        
-
-        # y_dummy.reshape(BATCH_SIZE * )
-
-        # (BATCH_SIZE * NUM_NOTES, NUM_TIMESTEPS, OUTPUT_LAYER)
-
-
         loss, _ = model.train_on_batch([X, y], y)
         print 'Loss =', loss
 
@@ -147,7 +138,6 @@ def get_training_model():
         Dropout(DROPOUT_PROBABILITY, name='dropout_2')
     ])
 
-    # TODO Verify batch_input_shape
     previous_notes = Sequential([
         Lambda(y_labels, output_shape=get_labels_shape, batch_input_shape=(BATCH_SIZE, NUM_TIMESTEPS, NUM_NOTES, OUTPUT_LAYER), name='y_labels')
     ])
@@ -243,7 +233,6 @@ def main():
     training_model = get_training_model()
 
     print 'Compiling the training model...'
-    # Note that these settings are based on the blog post (which uses lr=0.01 and epsilon=1e-6)
     optimizer = Adadelta(lr=0.01, epsilon=1e-6)
     training_model.compile(loss=objective, optimizer=optimizer, metrics=['accuracy'])
 

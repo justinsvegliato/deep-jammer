@@ -29,8 +29,7 @@ def get_input_form(note, state, context, beat):
     pitchclass = (note + piece_handler.LOWER_BOUND) % 12
     part_pitchclass = [int(i == pitchclass) for i in range(12)]
     # Concatenate the note states for the previous vicinity
-    part_prev_vicinity = list(
-        itertools.chain.from_iterable((get_or_default(state, note + i, [0, 0]) for i in range(-12, 13))))
+    part_prev_vicinity = list(itertools.chain.from_iterable((get_or_default(state, note + i, [0, 0]) for i in range(-12, 13))))
 
     part_context = context[pitchclass:] + context[:pitchclass]
 
