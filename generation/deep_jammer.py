@@ -8,9 +8,8 @@ from music_generator import MusicGenerator
 
 TIME_MODEL_LAYERS = [300, 300]
 NOTE_MODEL_LAYERS = [100, 50]
-DROPOUT_PROBABILITY = 0.5
 
-DEFAULT_EPOCHS = 10 
+DEFAULT_EPOCHS = 1
 DEFAULT_BATCH_SIZE = 2
 
 CONFIGURATIONS_DIRECTORY = 'configurations/'
@@ -44,16 +43,20 @@ def save_loss_history(loss_history):
         f.write('%s\n' % loss)
 
 
-def save_generated_piece(piece, tag):
+def save_generated_piece(generated_piece, tag):
     generated_piece_path = GENERATED_PIECES_DIRECTORY + GENERATED_PIECE_NAME % tag
-    piece_handler.save_piece(piece, generated_piece_path)
+    piece_handler.save_piece(generated_piece, generated_piece_path)
 
 
 def generate_piece(deep_jammer, pieces):
     # TODO Rename input and output since they're bad names
-    # TODO Do we need the extra parenthesis?
     input, output = map(np.array, piece_handler.get_segment(pieces))
-    return np.concatenate((np.expand_dims(output[0], 0), deep_jammer.predict(piece_handler.SEGMENT_LENGTH, input[0])), axis=0)
+
+    initial_note = input[0]
+    generated_piece = deep_jammer.predict(piece_handler.SEGMENT_LENGTH, initial_note)
+
+    initial_prediction = np.expand_dims(output[0], 0)
+    return np.concatenate((initial_prediction, generated_piece), axis=0)
 
 
 def train(deep_jammer, pieces, epochs, batch_size):
@@ -81,7 +84,7 @@ def main():
     pieces = repository_handler.load_repository(args.repository)
 
     print 'Generating Deep Jammer...'
-    deep_jammer = MusicGenerator(TIME_MODEL_LAYERS, NOTE_MODEL_LAYERS, DROPOUT_PROBABILITY)
+    deep_jammer = MusicGenerator(TIME_MODEL_LAYERS, NOTE_MODEL_LAYERS)
 
     print 'Training Deep Jammer...'
     train(deep_jammer, pieces, args.epochs, args.batch_size)

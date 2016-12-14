@@ -1,7 +1,7 @@
 import theano
 import theano.tensor as T
 import numpy as np
-from theano_lstm import StackedCells, LSTM, Layer, MultiDropout, create_optimization_updates
+from theano_lstm import StackedCells, LSTM, Layer, create_optimization_updates
 from router import Router
 from output_transformer import OutputTransformer
 
@@ -12,7 +12,7 @@ INITIAL_HIDDEN_STATE_KEY = 'initial_hidden_state'
 
 
 class MusicGenerator(object):
-    def __init__(self, time_model_layer_sizes, note_model_layer_sizes, dropout_probability):
+    def __init__(self, time_model_layer_sizes, note_model_layer_sizes):
         self.time_model = StackedCells(INPUT_SIZE, celltype=LSTM, layers=time_model_layer_sizes)
         self.time_model.layers.append(Router())
 
@@ -22,7 +22,6 @@ class MusicGenerator(object):
 
         self.time_model_layer_sizes = time_model_layer_sizes
         self.note_model_layer_sizes = note_model_layer_sizes
-        self.dropout_probability = dropout_probability
 
         self._initialize_update_function()
         self._initialize_predict_function()
