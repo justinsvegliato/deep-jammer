@@ -42,9 +42,7 @@ def get_input_form(note, state, context, beat):
 
 
 def get_single_input_form(state, time):
-    beat = get_beat(time)
-    context = get_context(state)
-    return [get_input_form(note, state, context, beat) for note in range(len(state))]
+    return [get_input_form(note, state, get_context(state), get_beat(time)) for note in range(len(state))]
 
 
 def get_multiple_input_forms(state_matrix):

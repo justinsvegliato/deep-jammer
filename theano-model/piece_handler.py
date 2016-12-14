@@ -51,7 +51,7 @@ def get_piece_batch(pieces, batch_size):
     return np.array(inputs), np.array(outputs)
 
 
-# TODO Clean this method
+# TODO Refactor this parsing code from the blog post
 def get_piece(midi_file):
     pattern = midi.read_midifile(midi_file)
 
@@ -112,7 +112,7 @@ def get_piece(midi_file):
     return state_matrix
 
 
-# TODO Clean this method
+# TODO Refactor this parsing code from the blog post
 def save_piece(piece, file_path):
     piece = np.asarray(piece)
 

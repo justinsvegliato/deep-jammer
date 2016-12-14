@@ -57,7 +57,7 @@ def get_pieces(path, size):
 
     return pieces
 
-
+# TODO Refactor this parsing code from the blog post
 def get_piece(midi_file):
     pattern = midi.read_midifile(midi_file)
 
@@ -115,7 +115,7 @@ def get_piece(midi_file):
 
     return statematrix
 
-
+# TODO Refactor this parsing code from the blog post
 def save_piece(piece, name):
     pattern = midi.Pattern()
     track = midi.Track()
