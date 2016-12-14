@@ -22,28 +22,25 @@ def get_probability_matrix(data):
                 if previous_notes[k] == 1:
                     normalizer[k, :] += 1
                     matrix[k, :] += notes
-
-    # this prevents division by zero errors, but does not affect the results.
-    # Anywhere that Normalizer is 0 corresponds to an element in the Matrix that is also 0.
+                    
     return matrix / (normalizer + (normalizer == 0))
 
 
-def Generate_Music(start_state, Probability_Matrix, Segment_Length):
-    # Assuming Start_State is of shape [Num_Notes, 2]
-    Num_Notes, Num_Dimensions = start_state.shape
+def generate_music(start_state, probability_matrix, segment_length):
+    num_notes, num_dimensions = start_state.shape
 
-    Segment = np.zeros((Segment_Length, Num_Notes * 2))
-    Segment[0] = start_state.reshape((Num_Notes * 2))
+    segment = np.zeros((segment_length, num_notes * 2))
+    segment[0] = start_state.reshape((num_notes * 2))
 
-    for i in xrange(Segment_Length - 1):
-        Mask = np.random.rand((Num_Notes * 2))
-        Next_State_Probabilities = Probability_Matrix.dot(Segment[i])
+    for i in xrange(segment_length - 1):
+        mask = np.random.rand((num_notes * 2))
+        next_state_probabilities = probability_matrix.dot(segment[i])
 
-        Segment[i + 1] = Next_State_Probabilities > Mask
+        segment[i + 1] = next_state_probabilities > mask
 
-        Segment[i + 1, :Num_Notes] *= Segment[i + 1, Num_Notes:]
+        segment[i + 1, :num_notes] *= segment[i + 1, num_notes:]
 
-    return Segment.reshape((Segment_Length, Num_Notes, Num_Dimensions))
+    return segment.reshape((segment_length, num_notes, num_dimensions))
 
 
 def main():
@@ -52,10 +49,10 @@ def main():
     _, data = piece_handler.get_piece_batch(pieces, args.batch_size)
 
     print 'Generating Probability Matrix..'
-    Probability_Matrix = get_probability_matrix(data)
+    probability_matrix = get_probability_matrix(data)
 
     print 'Making Sweet Jams...'
-    segment = Generate_Music(data[0, 0], Probability_Matrix, args.segment_length)
+    segment = generate_music(data[0, 0], probability_matrix, args.segment_length)
 
     print 'Saving Sweet Jams...'
     piece_handler.save_piece(segment, args.file_path)
@@ -66,8 +63,7 @@ if __name__ == '__main__':
     parser.add_argument('repository', metavar='repository', help='the name of the repository')
     parser.add_argument('file_path', metavar='filePath', help='the generated music destination')
     parser.add_argument('--batch_size', default=2000, type=int, metavar='batchSize', help='the size of each batch')
-    parser.add_argument('--segment_length', default=128, type=int, metavar='segmentLength',
-                        help='the length of the generated music segment')
+    parser.add_argument('--segment_length', default=128, type=int, metavar='segmentLength', help='the length of the generated music segment')
 
     args = parser.parse_args()
 

@@ -49,13 +49,12 @@ def save_generated_piece(generated_piece, tag):
 
 
 def generate_piece(deep_jammer, pieces):
-    # TODO Rename input and output since they're bad names
-    input, output = map(np.array, piece_handler.get_segment(pieces))
+    training_example, label = map(np.array, piece_handler.get_segment(pieces))
 
-    initial_note = input[0]
+    initial_note = training_example[0]
     generated_piece = deep_jammer.predict(piece_handler.SEGMENT_LENGTH, initial_note)
 
-    initial_prediction = np.expand_dims(output[0], 0)
+    initial_prediction = np.expand_dims(label[0], 0)
     return np.concatenate((initial_prediction, generated_piece), axis=0)
 
 

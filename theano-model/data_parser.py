@@ -27,7 +27,6 @@ def get_beat(time):
     return [2 * x - 1 for x in [time % 2, (time // 2) % 2, (time // 4) % 2, (time // 8) % 2]]
 
 
-# TODO Rename this method
 def get_input_form(note, state, context, beat):
     position_component = [note]
 
@@ -35,7 +34,6 @@ def get_input_form(note, state, context, beat):
     pitch_component = [int(i == pitch) for i in range(12)]
 
     vicinity = range(LOWER_VICINITY, UPPER_VICINITY)
-    # TODO Rewrite this line
     previous_vicinity_component = list(itertools.chain.from_iterable((get(state, note + offset, [0, 0]) for offset in vicinity)))
 
     context_component = context[pitch:] + context[:pitch]
@@ -43,13 +41,11 @@ def get_input_form(note, state, context, beat):
     return position_component + pitch_component + previous_vicinity_component + context_component + beat + [0]
 
 
-# TODO Rename this method
 def get_single_input_form(state, time):
     beat = get_beat(time)
     context = get_context(state)
     return [get_input_form(note, state, context, beat) for note in range(len(state))]
 
 
-# TODO Rename this method
 def get_multiple_input_forms(state_matrix):
     return [get_single_input_form(state, time) for time, state in enumerate(state_matrix)]
