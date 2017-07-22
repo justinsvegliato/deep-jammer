@@ -1,8 +1,6 @@
 # Deep Jammer
 
-## Installation (Work in progress --- I'm literally working on this right now.)
-
-* Add music to the pieces directory
+## Installation (Work in progress - Working on this right now.)
 
 To set up Deep Jamer, we just need to do a few steps:
 
@@ -22,15 +20,18 @@ To set up Deep Jamer, we just need to do a few steps:
 
 `./deep_jammer.py repository-name`
 
-4. If Deep Jammer runs properly, you should see the following output:
+4. If Deep Jammer runs properly, you should see the output below. At every 5 epochs, we print out a summary of the current loss. We also save the current configuration (i.e., the current weights) of the network and compose a sample piece that represents the current loss. If you want, you can adjust how often we save the current configuration or compose a sample piece by modifying the variables **SUMMARY_THRESHOLD** and **CHECKPOINT_THRESHOLD** in **deep_jammer.py**.
 
-Retrieving the repository...
 Generating Deep Jammer...
 Training Deep Jammer...
 Epoch 0
-    Loss = 25687
+    Loss = 64153
     Pieces = 0
 Epoch 0 -> Checkpoint
+Epoch 5
+    Loss = 19303
+    Pieces = 25
+Epoch 5 -> Checkpoint
 Saving Deep Jammer...
 Deep Jamming...
 
