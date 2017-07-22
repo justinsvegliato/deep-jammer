@@ -9,8 +9,11 @@ from music_generator import MusicGenerator
 TIME_MODEL_LAYERS = [300, 300]
 NOTE_MODEL_LAYERS = [100, 50]
 
-DEFAULT_EPOCHS = 1
-DEFAULT_BATCH_SIZE = 2
+SUMMARY_THRESHOLD = 5
+CHECKPOINT_THRESHOLD = 5
+
+DEFAULT_EPOCHS = 200 
+DEFAULT_BATCH_SIZE = 5
 
 CONFIGURATIONS_DIRECTORY = 'configurations/'
 GENERATED_PIECES_DIRECTORY = 'generated_pieces/'
@@ -20,9 +23,6 @@ GENERATED_PIECE_NAME = 'generated-piece-%s.mid'
 LOSS_HISTORY_FILE_NAME = 'loss-history.txt'
 
 FINAL_TAG = 'final'
-
-SUMMARY_THRESHOLD = 1
-CHECKPOINT_THRESHOLD = 1
 
 
 def display_summary(epoch, batch_size, loss):
