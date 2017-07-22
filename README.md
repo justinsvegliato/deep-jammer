@@ -14,7 +14,7 @@ To set up Deep Jamer, we just need to do a few steps:
 
 2. Next, we need to create a **repository**. A repository is a collection of music in the representation understood by Deep Jammer. To do this, we need to run the command below. Note that **repository_handler.py** uses the all of the MIDI files stored in the **pieces** directory and saves the repository in the **repositories** directory. By default, we include (a) a few MIDI files in the **pieces** directory and (b) the corresponding repository named **test-repository** in the **repositories** directory. If you run into any permission issues, just add `sudo` to the front of the command. This should solve any problems. This probably happens since it needs to read MIDI files and write a repository file on your file system.
 
- ./repository-handler.py repository-name
+ `./repository-handler.py repository-name`
  
 3. Now that we've built a repository, we can train Deep Jammer. All we need to do is run the command below. Again, add `sudo` to the front of the command if you run into any permission issues. Theano needs to access a few files in **~/.theano**.
 
@@ -22,18 +22,18 @@ To set up Deep Jamer, we just need to do a few steps:
 
 4. If Deep Jammer runs properly, you should see the output below. At every 5 epochs, we print out a summary of the current loss. We also save the current configuration (i.e., the current weights) of the network and compose a sample piece that represents the current loss. If you want, you can adjust how often we save the current configuration or compose a sample piece by modifying the variables **SUMMARY_THRESHOLD** and **CHECKPOINT_THRESHOLD** in **deep_jammer.py**.
 
-Generating Deep Jammer...
-Training Deep Jammer...
-Epoch 0
-    Loss = 64153
-    Pieces = 0
-Epoch 0 -> Checkpoint
-Epoch 5
-    Loss = 19303
-    Pieces = 25
-Epoch 5 -> Checkpoint
-Saving Deep Jammer...
-Deep Jamming...
+Generating Deep Jammer... <br />
+Training Deep Jammer... <br />
+Epoch 0 <br />
+    Loss = 64153 <br />
+    Pieces = 0 <br />
+Epoch 0 -> Checkpoint <br />
+Epoch 5 <br />
+    Loss = 19303 <br />
+    Pieces = 25 <br />
+Epoch 5 -> Checkpoint <br />
+Saving Deep Jammer... <br />
+Deep Jamming... <br />
 
 5. Now that we've trained Deep Jammer, let's adjust some of the parameters of our neural netwotrk just so you know how. At the top of **deep_jammer.py**, you'll see two variables: **TIME_MODEL_LAYERS** and **NOTE_MODEL_LAYERS**. Basically, the arrays represents the number of nodes in each time layer and each note layer. You can adjust these to whatever you want. We found that the current configuration is the sweet spot. While there are other variables that you can adjust, they aren't as important. Feel free to play around with them if you want though.
 
