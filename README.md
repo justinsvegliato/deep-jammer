@@ -12,7 +12,7 @@ To set up Deep Jamer, we just need to do a few steps:
 
 `cd theano-model`
 
-3. Before we can run Deep Jammer, we need to install a few Python packages, some of which you may already have. To get every package, we just run the command below. While we're pretty sure that we've included everythin, let us know what we missed.
+3. Before we can run Deep Jammer, we need to install a few Python packages, some of which you may already have. To get every package, we just run the command below. While we're pretty sure that we've included everything, let us know what we missed.
 
 `sudo pip install theano`
 
