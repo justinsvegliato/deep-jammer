@@ -1,4 +1,4 @@
-# Deep Jammer
+# `deep-jammer`
 Deep Jammer is a deep neural network that can endlessly compose classical piano music by learning from a ton of music from Bach, Beethoven, Mozart, and other famous composers. If you want to read a blog post about this, check it out [here](https://medium.com/towards-data-science/can-a-deep-neural-network-compose-music-f89b6ba4978d). And, if you're feeling really nerdy, check out [the report](https://www.justinsvegliato.com/pdf/deep-jammer-report.pdf) and the [the poster](https://www.justinsvegliato.com/pdf/deep-jammer-poster.pdf).
 
 By the way, I wouldn't use the Keras version for now. The Theano version was the last project that Sam and I ran.
